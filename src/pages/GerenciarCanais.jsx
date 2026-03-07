@@ -9,6 +9,7 @@ import {
 import { PremiumEmojiPicker } from '../components/PremiumEmojiPicker'; // 🌟 IMPORT DO COMPONENTE PREMIUM EMOJI
 import './GerenciarCanais.css';
 
+
 const INITIAL_FORM = {
   bot_id: '', origin_channel_id: '', origin_channel_name: '',
   dest_channel_id: '', dest_channel_name: '', channel_type: 'clone',
