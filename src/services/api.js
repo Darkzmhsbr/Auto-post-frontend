@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Lembre-se de colocar a URL real do seu backend do Railway aqui!
-const API_URL = import.meta.env.VITE_API_URL || 'https://coloque-aqui-o-link-do-seu-backend-railway.up.railway.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://auto-post-backend-production.up.railway.app';
 
 const api = axios.create({
   baseURL: API_URL,
