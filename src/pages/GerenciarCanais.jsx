@@ -15,7 +15,8 @@ const INITIAL_FORM = {
   interval_minutes: 30, schedule_start: '', schedule_end: '',
   post_order: 'fifo', cta_find: '', cta_replace: '', cta_mode: 'exact',
   custom_caption: '', use_custom_caption: false, caption_mode: 'replace',
-  userbot_required: true, // 🌟 NOVO: ESTADO PARA O MODO "SÓ BOT"
+  userbot_required: true, // 🌟 MODO "SÓ BOT"
+  auto_topic_clone: false, // 🌟 NOVO: ESPELHAMENTO INTELIGENTE DE TÓPICOS
 };
 
 export function GerenciarCanais() {
@@ -78,7 +79,8 @@ export function GerenciarCanais() {
       custom_caption: canal.custom_caption || '',
       use_custom_caption: canal.use_custom_caption || false,
       caption_mode: canal.caption_mode || 'replace',
-      userbot_required: canal.userbot_required !== false, // 🌟 CARREGA O ESTADO DO USERBOT (Padrão true)
+      userbot_required: canal.userbot_required !== false,
+      auto_topic_clone: canal.auto_topic_clone || false, // 🌟 CARREGA O ESTADO DO ESPELHAMENTO DE TÓPICOS
     });
     setExtraDests([]);
     setShowForm(true);
@@ -113,7 +115,7 @@ export function GerenciarCanais() {
   };
 
   // ==========================================
-  // LÓGICA DE TÓPICOS (CRUD) 🌟
+  // LÓGICA DE TÓPICOS (CRUD MANUAL) 🌟
   // ==========================================
   const handleToggleTopics = async (channelId) => {
     if (expandedTopicId === channelId) {
@@ -195,7 +197,8 @@ export function GerenciarCanais() {
         cta_find: form.cta_find || null,
         cta_replace: form.cta_replace || null,
         custom_caption: form.custom_caption || null,
-        userbot_required: form.userbot_required, // 🌟 ENVIANDO O STATUS DO USERBOT
+        userbot_required: form.userbot_required,
+        auto_topic_clone: form.auto_topic_clone, // 🌟 ENVIANDO O NOVO STATUS
       };
 
       if (editingId) {
@@ -420,7 +423,17 @@ export function GerenciarCanais() {
               </>
             )}
 
-            <button type="submit" className="canais-submit-btn" disabled={saving}>
+            {/* 🌟 ESPELHAMENTO DE TÓPICOS INTELIGENTE */}
+            <div className="form-section-label" style={{ marginTop: '24px' }}><Hash size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />Fóruns e Tópicos (opcional)</div>
+            <div className="caption-toggle" style={{ marginTop: '8px' }}>
+              <label className="toggle-label">
+                <input type="checkbox" checked={form.auto_topic_clone} onChange={(e) => handleChange('auto_topic_clone', e.target.checked)} />
+                <span className="toggle-slider"></span><span>Espelhar Tópicos Automaticamente</span>
+              </label>
+            </div>
+            <span className="field-hint" style={{ display: 'block', marginTop: '4px' }}>Se a origem for um grupo com tópicos, o sistema criará os tópicos no destino (se não existirem) e enviará as postagens preservando a estrutura original.</span>
+
+            <button type="submit" className="canais-submit-btn" style={{ marginTop: '24px' }} disabled={saving}>
               {saving ? (<><Loader2 size={18} className="spin" /> Salvando...</>) : editingId ? (<><Save size={18} /> Salvar Alterações</>) : (<><Plus size={18} /> Criar Configuração</>)}
             </button>
           </form>
@@ -480,12 +493,13 @@ export function GerenciarCanais() {
                   <div className="detail-item"><Layers size={13} /><span>{canal.total_forwarded} enviados</span></div>
                   {(canal.destinations?.length > 0) && (<div className="detail-item"><Target size={13} /><span>{1 + canal.destinations.length} destinos</span></div>)}
                   {!canal.userbot_required && (<div className="detail-item"><Bot size={13} /><span>Apenas Bot Oficial</span></div>)}
+                  {canal.auto_topic_clone && (<div className="detail-item"><Hash size={13} /><span>Tópicos Auto</span></div>)}
                 </div>
 
                 <div className="canal-card-actions">
                   <button className="canal-edit-btn" onClick={() => openEditForm(canal)}><Edit3 size={14} /> Editar</button>
                   <button className="canal-adddest-btn" onClick={() => handleAddDestToChannel(canal.id)}><PlusCircle size={14} /> Destino</button>
-                  <button className="canal-adddest-btn" onClick={() => handleToggleTopics(canal.id)}><Hash size={14} /> Tópicos</button> {/* 🌟 BOTÃO TÓPICOS */}
+                  <button className="canal-adddest-btn" onClick={() => handleToggleTopics(canal.id)}><Hash size={14} /> Tópicos</button> {/* 🌟 BOTÃO TÓPICOS MANUAIS */}
                   <button className={`canal-toggle-btn ${canal.is_active ? 'active' : ''}`} onClick={() => handleToggle(canal.id)}>
                     {canal.is_active ? <PowerOff size={14} /> : <Power size={14} />}{canal.is_active ? 'Pausar' : 'Ativar'}
                   </button>
@@ -495,10 +509,10 @@ export function GerenciarCanais() {
                 {/* 🌟 PAINEL INLINE DE MAPEAMENTO DE TÓPICOS */}
                 {expandedTopicId === canal.id && (
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeUp 0.3s ease' }}>
-                    <span className="extra-dests-label" style={{ color: '#8b5cf6' }}><Hash size={12} /> Mapeamento de Tópicos</span>
+                    <span className="extra-dests-label" style={{ color: '#8b5cf6' }}><Hash size={12} /> Mapeamento Manual de Tópicos</span>
                     
                     {channelTopics.length === 0 ? (
-                      <span className="field-hint" style={{ fontSize: '0.78rem' }}>Nenhum tópico mapeado. As mensagens irão para o chat geral do destino.</span>
+                      <span className="field-hint" style={{ fontSize: '0.78rem' }}>Nenhum tópico mapeado manualmente.</span>
                     ) : (
                       channelTopics.map(t => (
                         <div key={t.id} className="extra-dest-card-item" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px' }}>
@@ -515,6 +529,7 @@ export function GerenciarCanais() {
                       <input type="number" placeholder="ID Destino (ex: 5)" className="form-input" style={{ padding: '8px 10px', fontSize: '0.8rem', flex: 1 }} value={topicDestId} onChange={e => setTopicDestId(e.target.value)} />
                       <button className="add-dest-btn" style={{ height: 'auto', padding: '8px 14px' }} onClick={() => handleAddTopic(canal.id)} disabled={!topicOriginId || !topicDestId}><Plus size={14} /></button>
                     </div>
+                    <span className="field-hint" style={{ fontSize: '0.7rem' }}>Use isso caso queira forçar uma postagem de um tópico X a ir para o tópico Y.</span>
                   </div>
                 )}
               </div>
