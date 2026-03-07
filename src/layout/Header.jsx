@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Zap } from 'lucide-react';
+import { Menu, Zap, User } from 'lucide-react';
 import './Header.css';
 
 export function Header({ onToggleMenu }) {
@@ -10,14 +10,16 @@ export function Header({ onToggleMenu }) {
           <Menu size={24} />
         </button>
         <div className="header-title">
-          <Zap size={18} color="#c333ff" />
-          <span>Visão Geral</span>
+          <Zap size={20} color="var(--primary)" />
+          <span>AutoPost Oficial</span>
         </div>
       </div>
       
       <div className="header-right">
         <div className="user-badge">
-          <div className="user-avatar">ZP</div>
+          <div className="user-avatar">
+            <User size={18} color="#fff" />
+          </div>
         </div>
       </div>
     </header>

@@ -1,31 +1,15 @@
-/* 1. RESET GLOBAL (Mata as margens do navegador e o bloco cinza) */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: #0a0a0f;
-  color: #fff;
-  overflow-x: hidden; /* Proíbe a página de vazar para os lados */
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-/* 2. ESTRUTURA PRINCIPAL */
 .app-container {
   display: flex;
   min-height: 100vh;
-  background-color: #0a0a0f;
+  background-color: var(--background);
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* A MATEMÁTICA CORRETA: 100% da tela MENOS o tamanho do menu */
-  width: calc(100% - 260px); 
-  margin-left: 260px; 
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
   transition: margin 0.3s ease, width 0.3s ease;
 }
 
@@ -43,13 +27,7 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 3. RESPONSIVO (Celular) */
 @media (max-width: 768px) {
-  .main-content {
-    margin-left: 0; 
-    width: 100%; /* No celular, como o menu some, volta a ser 100% */
-  }
-  .page-content {
-    padding: 15px;
-  }
+  .main-content { margin-left: 0; width: 100%; }
+  .page-content { padding: 15px; }
 }

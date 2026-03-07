@@ -7,7 +7,6 @@ import {
 import './Sidebar.css';
 
 export function Sidebar({ isOpen, onClose }) {
-  // Estado para controlar se o menu de Bots está aberto ou fechado
   const [isBotsOpen, setIsBotsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -19,12 +18,9 @@ export function Sidebar({ isOpen, onClose }) {
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <span className="logo-icon">⚡</span>
-          AutoPost
+          <span className="logo-icon">⚡</span> AutoPost
         </div>
-        <button className="close-sidebar-btn" onClick={onClose}>
-          <X size={24} color="#a3a3a3" />
-        </button>
+        <button className="close-sidebar-btn" onClick={onClose}><X size={24} /></button>
       </div>
 
       <nav className="sidebar-nav">
@@ -35,52 +31,46 @@ export function Sidebar({ isOpen, onClose }) {
         </NavLink>
 
         <NavLink to="/sessao" className="nav-item" onClick={onClose}>
-          <Smartphone size={20} /> <span>Conta Cliente (Sessão)</span>
+          <Smartphone size={20} /> <span>Conta (Userbot)</span>
         </NavLink>
 
-        {/* 👇 MENU SANFONA DE BOTS 👇 */}
         <div className="nav-dropdown">
-          <div 
-            className={`nav-item dropdown-toggle ${isBotsOpen ? 'active-dropdown' : ''}`} 
-            onClick={() => setIsBotsOpen(!isBotsOpen)}
-          >
+          <div className={`nav-item dropdown-toggle ${isBotsOpen ? 'active' : ''}`} onClick={() => setIsBotsOpen(!isBotsOpen)}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Bot size={20} /> <span>Gerenciar Bots</span>
+              <Bot size={20} /> <span>Meus Bots</span>
             </div>
             {isBotsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </div>
-          
-          {/* Sub-menus que aparecem quando clica */}
           <div className={`dropdown-content ${isBotsOpen ? 'show' : ''}`}>
             <NavLink to="/criar-bot" className="sub-nav-item" onClick={onClose}>
               <PlusCircle size={16} /> <span>Criar novo Bot</span>
             </NavLink>
             <NavLink to="/meus-bots" className="sub-nav-item" onClick={onClose}>
-              <Bot size={16} /> <span>Meus Bots</span>
+              <Bot size={16} /> <span>Gerenciar Bots</span>
             </NavLink>
           </div>
         </div>
 
         <NavLink to="/canais" className="nav-item" onClick={onClose}>
-          <Layers size={20} /> <span>Automações (Canais)</span>
+          <Layers size={20} /> <span>Canais / Pontes</span>
         </NavLink>
 
         <NavLink to="/fila" className="nav-item" onClick={onClose}>
-          <ListOrdered size={20} /> <span>Fila de Postagens</span>
+          <ListOrdered size={20} /> <span>Fila de Envios</span>
         </NavLink>
 
         <NavLink to="/logs" className="nav-item" onClick={onClose}>
-          <History size={20} /> <span>Histórico (Logs)</span>
+          <History size={20} /> <span>Histórico</span>
         </NavLink>
 
         <div className="divider"></div>
 
         <a href="https://www.zenyxvips.com/dashboard" className="nav-item return-btn">
-          <ExternalLink size={20} /> <span>Voltar p/ Zenyx VIPs</span>
+          <ExternalLink size={20} /> <span>Voltar p/ Zenyx</span>
         </a>
 
         <div className="nav-item logout-btn" onClick={handleLogout}>
-          <LogOut size={20} /> <span>Sair do Sistema</span>
+          <LogOut size={20} /> <span>Sair</span>
         </div>
       </nav>
     </aside>
