@@ -1,0 +1,241 @@
+/* ==========================================
+   FILA DE ENVIOS - ZENYX AUTOPOST
+   ========================================== */
+.fila-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeUp 0.4s ease;
+}
+
+.fila-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.fila-header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fila-header p {
+  color: #a3a3a3;
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+}
+
+.fila-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.fila-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #888;
+}
+
+.filter-select {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-select option {
+  background: #12121a;
+}
+
+.fila-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(195, 51, 255, 0.1);
+  border: 1px solid rgba(195, 51, 255, 0.2);
+  border-radius: 8px;
+  color: #c333ff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fila-refresh-btn:hover {
+  background: rgba(195, 51, 255, 0.2);
+}
+
+/* TOAST */
+.fila-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+.fila-toast.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
+
+.fila-toast.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+/* LOADING / EMPTY */
+.fila-loading, .fila-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.fila-empty {
+  background: #12121a;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.fila-empty p { color: #888; font-size: 1rem; margin: 0; }
+.fila-empty span { font-size: 0.85rem; color: #555; }
+
+/* TABLE */
+.fila-table-wrapper {
+  overflow-x: auto;
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+}
+
+.fila-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.fila-table thead th {
+  text-align: left;
+  padding: 14px 16px;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
+}
+
+.fila-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
+}
+
+.fila-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.fila-table tbody tr.row-error {
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.fila-table tbody td {
+  padding: 12px 16px;
+  color: #ccc;
+  vertical-align: middle;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.td-channel {
+  font-weight: 500;
+  color: #e5e5e5;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mode-tag {
+  padding: 2px 8px;
+  background: rgba(195, 51, 255, 0.08);
+  color: #c333ff;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.td-preview {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #999;
+  font-size: 0.82rem;
+}
+
+.td-date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #777;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.fila-delete-btn {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+}
+
+.fila-delete-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .fila-header { flex-direction: column; }
+  .fila-header h1 { font-size: 1.4rem; }
+  .fila-actions { width: 100%; justify-content: space-between; }
+  .fila-table { font-size: 0.8rem; }
+  .fila-table thead th, .fila-table tbody td { padding: 10px 10px; }
+  .td-preview { max-width: 120px; }
+}

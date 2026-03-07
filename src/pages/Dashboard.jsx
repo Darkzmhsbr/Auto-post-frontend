@@ -95,7 +95,7 @@ export function Dashboard() {
           </div>
           <div className="stat-info">
             <span className="stat-title">Posts Enviados Hoje</span>
-            <span className="stat-value">0</span>
+            <span className="stat-value">{stats?.posts_enviados_hoje || 0}</span>
           </div>
         </div>
 
@@ -106,7 +106,7 @@ export function Dashboard() {
           <div className="stat-info">
             <span className="stat-title">Status do Motor</span>
             <span className="stat-value" style={{ fontSize: '1.2rem', marginTop: '5px' }}>
-              Operante
+              {stats?.engine?.running ? '🟢 Operante' : '🔴 Parado'}
             </span>
           </div>
         </div>
