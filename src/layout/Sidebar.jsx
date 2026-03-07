@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Smartphone, Layers, ListOrdered, 
-  History, X, LogOut, ExternalLink, Bot, ChevronDown, ChevronRight, PlusCircle
+  History, X, LogOut, ExternalLink, Bot
 } from 'lucide-react';
 import './Sidebar.css';
 
 export function Sidebar({ isOpen, onClose }) {
-  const [isBotsOpen, setIsBotsOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('zenyx_token');
@@ -34,22 +33,9 @@ export function Sidebar({ isOpen, onClose }) {
           <Smartphone size={20} /> <span>Conta (Userbot)</span>
         </NavLink>
 
-        <div className="nav-dropdown">
-          <div className={`nav-item dropdown-toggle ${isBotsOpen ? 'active' : ''}`} onClick={() => setIsBotsOpen(!isBotsOpen)}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Bot size={20} /> <span>Meus Bots</span>
-            </div>
-            {isBotsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          </div>
-          <div className={`dropdown-content ${isBotsOpen ? 'show' : ''}`}>
-            <NavLink to="/criar-bot" className="sub-nav-item" onClick={onClose}>
-              <PlusCircle size={16} /> <span>Criar novo Bot</span>
-            </NavLink>
-            <NavLink to="/meus-bots" className="sub-nav-item" onClick={onClose}>
-              <Bot size={16} /> <span>Gerenciar Bots</span>
-            </NavLink>
-          </div>
-        </div>
+        <NavLink to="/bots" className="nav-item" onClick={onClose}>
+          <Bot size={20} /> <span>Meus Bots</span>
+        </NavLink>
 
         <NavLink to="/canais" className="nav-item" onClick={onClose}>
           <Layers size={20} /> <span>Canais / Pontes</span>
