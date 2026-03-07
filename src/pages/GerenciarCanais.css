@@ -596,3 +596,276 @@
     padding: 16px;
   }
 }
+
+/* ==========================================
+   DESTINOS EXTRAS
+   ========================================== */
+.extra-dests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.extra-dest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(195, 51, 255, 0.05);
+  border: 1px solid rgba(195, 51, 255, 0.12);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.extra-dest-name { font-weight: 500; }
+.extra-dest-id { font-family: 'Courier New', monospace; font-size: 0.78rem; color: #777; margin-left: auto; }
+
+.extra-dest-remove {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  transition: background 0.2s;
+}
+.extra-dest-remove:hover { background: rgba(239, 68, 68, 0.1); }
+
+.add-dest-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 16px;
+  background: rgba(195, 51, 255, 0.1);
+  border: 1px solid rgba(195, 51, 255, 0.2);
+  border-radius: 10px;
+  color: #c333ff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: 42px;
+}
+.add-dest-btn:hover:not(:disabled) { background: rgba(195, 51, 255, 0.2); }
+.add-dest-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Card destinos extras */
+.extra-dests-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: rgba(195, 51, 255, 0.03);
+  border: 1px solid rgba(195, 51, 255, 0.08);
+  border-radius: 8px;
+}
+
+.extra-dests-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #c333ff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.extra-dest-card-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  color: #bbb;
+}
+
+.extra-dest-card-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: #666;
+  margin-left: auto;
+}
+
+.extra-dest-card-remove {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  transition: color 0.2s;
+}
+.extra-dest-card-remove:hover { color: #ef4444; }
+
+.canal-adddest-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(195, 51, 255, 0.08);
+  border: 1px solid rgba(195, 51, 255, 0.15);
+  border-radius: 8px;
+  color: #c333ff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.canal-adddest-btn:hover { background: rgba(195, 51, 255, 0.15); }
+
+.caption-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
+}
+
+/* ==========================================
+   LEGENDA PERSONALIZADA (EDITOR)
+   ========================================== */
+.caption-toggle {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: #ccc;
+  user-select: none;
+}
+
+.toggle-label input { display: none; }
+
+.toggle-slider {
+  width: 38px;
+  height: 20px;
+  background: #333;
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #888;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.toggle-label input:checked + .toggle-slider {
+  background: rgba(195, 51, 255, 0.3);
+}
+
+.toggle-label input:checked + .toggle-slider::after {
+  left: 20px;
+  background: #c333ff;
+}
+
+.caption-mode-select {
+  max-width: 260px;
+  padding: 8px 12px !important;
+  font-size: 0.82rem !important;
+}
+
+/* EDITOR */
+.caption-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.caption-toolbar {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 10px;
+  flex-wrap: wrap;
+}
+
+.caption-toolbar button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #888;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  transition: all 0.15s;
+}
+
+.caption-toolbar button:hover {
+  background: rgba(195, 51, 255, 0.1);
+  color: #c333ff;
+  border-color: rgba(195, 51, 255, 0.2);
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: #333;
+  margin: 0 4px;
+  align-self: center;
+}
+
+.caption-textarea {
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0 0 10px 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.caption-textarea:focus {
+  border-color: rgba(195, 51, 255, 0.4);
+}
+
+.caption-textarea::placeholder {
+  color: #444;
+}
+
+/* ==========================================
+   RESPONSIVO (novos elementos)
+   ========================================== */
+@media (max-width: 768px) {
+  .caption-toggle { flex-direction: column; align-items: flex-start; }
+  .caption-mode-select { max-width: 100%; }
+  .extra-dest-item { flex-wrap: wrap; }
+  .extra-dest-id { margin-left: 0; }
+  .canal-card-actions { flex-wrap: wrap; }
+  .canal-adddest-btn { flex: 1; justify-content: center; }
+}

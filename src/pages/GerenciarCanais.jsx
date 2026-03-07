@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { channelService, botService } from '../services/api';
 import {
   Layers, Plus, Trash2, CheckCircle, AlertCircle, Loader2,
-  ArrowRight, Power, PowerOff, Clock, Repeat, Search, Bot,
-  MessageSquare, Copy
+  ArrowRight, Power, PowerOff, Clock, Repeat, Bot,
+  MessageSquare, Copy, Bold, Italic, Underline, Strikethrough,
+  Code, Quote, Link as LinkIcon, Type, PlusCircle, Target
 } from 'lucide-react';
 import './GerenciarCanais.css';
 
@@ -15,7 +16,14 @@ export function GerenciarCanais() {
   const [showForm, setShowForm] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  // Campos do formulário
+  // Destinos extras no formulário de criação
+  const [extraDests, setExtraDests] = useState([]);
+  const [newDestId, setNewDestId] = useState('');
+  const [newDestName, setNewDestName] = useState('');
+
+  // Ref para textarea de legenda
+  const captionRef = useRef(null);
+
   const [form, setForm] = useState({
     bot_id: '',
     origin_channel_id: '',
@@ -29,6 +37,9 @@ export function GerenciarCanais() {
     post_order: 'fifo',
     cta_find: '',
     cta_replace: '',
+    custom_caption: '',
+    use_custom_caption: false,
+    caption_mode: 'replace',
   });
 
   useEffect(() => {
@@ -51,12 +62,81 @@ export function GerenciarCanais() {
   };
 
   // ==========================================
+  // FORMATAÇÃO DE LEGENDA (toolbar)
+  // ==========================================
+  const applyFormat = (tagStart, tagEnd) => {
+    const textarea = captionRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = form.custom_caption || '';
+    const selected = text.substring(start, end);
+    const newText = text.substring(0, start) + tagStart + selected + tagEnd + text.substring(end);
+    handleChange('custom_caption', newText);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(end + tagStart.length + tagEnd.length, end + tagStart.length + tagEnd.length);
+    }, 0);
+  };
+
+  const addLinkFormat = () => {
+    const url = prompt("Digite a URL:", "https://");
+    if (url) applyFormat(`<a href="${url}">`, '</a>');
+  };
+
+  // ==========================================
+  // DESTINOS EXTRAS (no formulário)
+  // ==========================================
+  const handleAddExtraDest = () => {
+    if (!newDestId) return;
+    setExtraDests(prev => [...prev, {
+      dest_channel_id: parseInt(newDestId),
+      dest_channel_name: newDestName || `Destino #${prev.length + 2}`,
+    }]);
+    setNewDestId('');
+    setNewDestName('');
+  };
+
+  const handleRemoveExtraDest = (index) => {
+    setExtraDests(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Adicionar destino a um canal EXISTENTE
+  const handleAddDestToChannel = async (channelId) => {
+    const destId = prompt("ID do novo canal de destino:");
+    if (!destId) return;
+    const destName = prompt("Apelido (opcional):", "");
+    try {
+      await channelService.addDestination(channelId, {
+        dest_channel_id: parseInt(destId),
+        dest_channel_name: destName || `Destino extra`,
+      });
+      showFeedbackMsg('Destino adicionado!', 'success');
+      carregarDados();
+    } catch (error) {
+      showFeedbackMsg(error.response?.data?.detail || 'Erro ao adicionar destino.', 'error');
+    }
+  };
+
+  // Remover destino extra de um canal existente
+  const handleRemoveDestFromChannel = async (channelId, destId, destName) => {
+    if (!window.confirm(`Remover destino "${destName}"?`)) return;
+    try {
+      await channelService.removeDestination(channelId, destId);
+      showFeedbackMsg('Destino removido!', 'success');
+      carregarDados();
+    } catch {
+      showFeedbackMsg('Erro ao remover destino.', 'error');
+    }
+  };
+
+  // ==========================================
   // CRIAR CANAL
   // ==========================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.origin_channel_id || !form.dest_channel_id) {
-      showFeedbackMsg('Preencha os IDs de origem e destino!', 'error');
+      showFeedbackMsg('Preencha os IDs de origem e destino principal!', 'error');
       return;
     }
 
@@ -72,6 +152,10 @@ export function GerenciarCanais() {
         schedule_end: form.schedule_end || null,
         cta_find: form.cta_find || null,
         cta_replace: form.cta_replace || null,
+        custom_caption: form.custom_caption || null,
+        use_custom_caption: form.use_custom_caption,
+        caption_mode: form.caption_mode,
+        extra_destinations: extraDests.length > 0 ? extraDests : null,
       };
       await channelService.create(payload);
       showFeedbackMsg('Canal configurado com sucesso!', 'success');
@@ -80,19 +164,20 @@ export function GerenciarCanais() {
         dest_channel_id: '', dest_channel_name: '', channel_type: 'clone',
         interval_minutes: 30, schedule_start: '', schedule_end: '',
         post_order: 'fifo', cta_find: '', cta_replace: '',
+        custom_caption: '', use_custom_caption: false, caption_mode: 'replace',
       });
+      setExtraDests([]);
       setShowForm(false);
       carregarDados();
     } catch (error) {
-      const msg = error.response?.data?.detail || 'Erro ao criar canal.';
-      showFeedbackMsg(msg, 'error');
+      showFeedbackMsg(error.response?.data?.detail || 'Erro ao criar canal.', 'error');
     } finally {
       setSaving(false);
     }
   };
 
   // ==========================================
-  // TOGGLE ATIVO/INATIVO
+  // TOGGLE / DELETE
   // ==========================================
   const handleToggle = async (channelId) => {
     try {
@@ -104,9 +189,6 @@ export function GerenciarCanais() {
     }
   };
 
-  // ==========================================
-  // DELETAR CANAL
-  // ==========================================
   const handleDelete = async (channelId, name) => {
     if (!window.confirm(`Remover a configuração "${name}"?`)) return;
     try {
@@ -135,17 +217,8 @@ export function GerenciarCanais() {
     showFeedbackMsg('ID copiado!', 'success');
   };
 
-  const channelTypeLabels = {
-    clone: 'Clonar Posts',
-    forward: 'Encaminhar',
-    spy: 'Espionar (Ponte)',
-  };
-
-  const postOrderLabels = {
-    fifo: 'FIFO (Primeiro a entrar)',
-    lifo: 'LIFO (Último a entrar)',
-    random: 'Aleatório',
-  };
+  const channelTypeLabels = { clone: 'Clonar Posts', forward: 'Encaminhar', spy: 'Espionar (Ponte)' };
+  const postOrderLabels = { fifo: 'FIFO (Primeiro a entrar)', lifo: 'LIFO (Último a entrar)', random: 'Aleatório' };
 
   // ==========================================
   // RENDER
@@ -196,114 +269,102 @@ export function GerenciarCanais() {
             {bots.length > 0 && (
               <div className="form-group">
                 <label>Bot Vinculado (Ponte)</label>
-                <select
-                  value={form.bot_id}
-                  onChange={(e) => handleChange('bot_id', e.target.value)}
-                  className="form-select"
-                >
+                <select value={form.bot_id} onChange={(e) => handleChange('bot_id', e.target.value)} className="form-select">
                   <option value="">Nenhum (usar Userbot direto)</option>
                   {bots.map((bot) => (
-                    <option key={bot.id} value={bot.id}>
-                      {bot.bot_name} — @{bot.bot_username}
-                    </option>
+                    <option key={bot.id} value={bot.id}>{bot.bot_name} — @{bot.bot_username}</option>
                   ))}
                 </select>
                 <span className="field-hint">Selecione um Bot cadastrado para usar como "carteiro" na ponte.</span>
               </div>
             )}
 
-            {/* TIPO E ORDEM */}
+            {/* TIPO, ORDEM, INTERVALO */}
             <div className="form-row-3">
               <div className="form-group">
                 <label>Tipo de Operação</label>
-                <select
-                  value={form.channel_type}
-                  onChange={(e) => handleChange('channel_type', e.target.value)}
-                  className="form-select"
-                >
+                <select value={form.channel_type} onChange={(e) => handleChange('channel_type', e.target.value)} className="form-select">
                   <option value="clone">Clonar Posts</option>
                   <option value="forward">Encaminhar (Forward)</option>
                   <option value="spy">Espionar (Ponte Premium)</option>
                 </select>
               </div>
-
               <div className="form-group">
                 <label>Ordem dos Posts</label>
-                <select
-                  value={form.post_order}
-                  onChange={(e) => handleChange('post_order', e.target.value)}
-                  className="form-select"
-                >
+                <select value={form.post_order} onChange={(e) => handleChange('post_order', e.target.value)} className="form-select">
                   <option value="fifo">FIFO (Primeiro a entrar)</option>
                   <option value="lifo">LIFO (Último a entrar)</option>
                   <option value="random">Aleatório</option>
                 </select>
               </div>
-
               <div className="form-group">
                 <label>Intervalo (minutos)</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={form.interval_minutes}
-                  onChange={(e) => handleChange('interval_minutes', e.target.value)}
-                  className="form-input"
-                />
+                <input type="number" min="1" value={form.interval_minutes} onChange={(e) => handleChange('interval_minutes', e.target.value)} className="form-input" />
               </div>
             </div>
 
-            {/* ORIGEM → DESTINO */}
+            {/* ORIGEM */}
             <div className="form-section-label">Rota do Canal</div>
             <div className="form-row">
               <div className="form-group">
                 <label>ID Canal Origem</label>
-                <input
-                  type="text"
-                  placeholder="-1001234567890"
-                  value={form.origin_channel_id}
-                  onChange={(e) => handleChange('origin_channel_id', e.target.value)}
-                  className="form-input"
-                />
+                <input type="text" placeholder="-1001234567890" value={form.origin_channel_id} onChange={(e) => handleChange('origin_channel_id', e.target.value)} className="form-input" />
               </div>
               <div className="form-group">
                 <label>Nome (apelido)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Canal Concorrente X"
-                  value={form.origin_channel_name}
-                  onChange={(e) => handleChange('origin_channel_name', e.target.value)}
-                  className="form-input"
-                />
+                <input type="text" placeholder="Ex: Canal Concorrente X" value={form.origin_channel_name} onChange={(e) => handleChange('origin_channel_name', e.target.value)} className="form-input" />
               </div>
             </div>
 
             <div className="form-route-arrow">
-              <ArrowRight size={20} />
-              <span>encaminha para</span>
-              <ArrowRight size={20} />
+              <ArrowRight size={20} /><span>encaminha para</span><ArrowRight size={20} />
             </div>
 
+            {/* DESTINO PRINCIPAL */}
             <div className="form-row">
               <div className="form-group">
-                <label>ID Canal Destino</label>
-                <input
-                  type="text"
-                  placeholder="-1009876543210"
-                  value={form.dest_channel_id}
-                  onChange={(e) => handleChange('dest_channel_id', e.target.value)}
-                  className="form-input"
-                />
+                <label>ID Canal Destino (principal)</label>
+                <input type="text" placeholder="-1009876543210" value={form.dest_channel_id} onChange={(e) => handleChange('dest_channel_id', e.target.value)} className="form-input" />
               </div>
               <div className="form-group">
                 <label>Nome (apelido)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Meu Canal VIP"
-                  value={form.dest_channel_name}
-                  onChange={(e) => handleChange('dest_channel_name', e.target.value)}
-                  className="form-input"
-                />
+                <input type="text" placeholder="Ex: Meu Canal VIP" value={form.dest_channel_name} onChange={(e) => handleChange('dest_channel_name', e.target.value)} className="form-input" />
               </div>
+            </div>
+
+            {/* DESTINOS EXTRAS */}
+            <div className="form-section-label">Destinos Adicionais (opcional)</div>
+            <span className="field-hint" style={{ marginBottom: '8px', display: 'block' }}>
+              O mesmo conteúdo será enviado para todos os destinos configurados.
+            </span>
+
+            {extraDests.length > 0 && (
+              <div className="extra-dests-list">
+                {extraDests.map((d, i) => (
+                  <div key={i} className="extra-dest-item">
+                    <Target size={14} />
+                    <span className="extra-dest-name">{d.dest_channel_name}</span>
+                    <span className="extra-dest-id">{d.dest_channel_id}</span>
+                    <button type="button" className="extra-dest-remove" onClick={() => handleRemoveExtraDest(i)}>
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="form-row" style={{ alignItems: 'flex-end' }}>
+              <div className="form-group">
+                <label>ID do Destino Extra</label>
+                <input type="text" placeholder="-100..." value={newDestId} onChange={(e) => setNewDestId(e.target.value)} className="form-input" />
+              </div>
+              <div className="form-group">
+                <label>Apelido</label>
+                <input type="text" placeholder="Ex: Canal Free" value={newDestName} onChange={(e) => setNewDestName(e.target.value)} className="form-input" />
+              </div>
+              <button type="button" className="add-dest-btn" onClick={handleAddExtraDest} disabled={!newDestId}>
+                <PlusCircle size={16} /> Adicionar
+              </button>
             </div>
 
             {/* AGENDAMENTO */}
@@ -311,21 +372,11 @@ export function GerenciarCanais() {
             <div className="form-row">
               <div className="form-group">
                 <label>Início do Horário</label>
-                <input
-                  type="time"
-                  value={form.schedule_start}
-                  onChange={(e) => handleChange('schedule_start', e.target.value)}
-                  className="form-input"
-                />
+                <input type="time" value={form.schedule_start} onChange={(e) => handleChange('schedule_start', e.target.value)} className="form-input" />
               </div>
               <div className="form-group">
                 <label>Fim do Horário</label>
-                <input
-                  type="time"
-                  value={form.schedule_end}
-                  onChange={(e) => handleChange('schedule_end', e.target.value)}
-                  className="form-input"
-                />
+                <input type="time" value={form.schedule_end} onChange={(e) => handleChange('schedule_end', e.target.value)} className="form-input" />
               </div>
             </div>
             <span className="field-hint">Deixe vazio para funcionar 24h. Horário de Brasília.</span>
@@ -335,26 +386,68 @@ export function GerenciarCanais() {
             <div className="form-row">
               <div className="form-group">
                 <label>Buscar (texto/link original)</label>
-                <input
-                  type="text"
-                  placeholder="https://link-do-concorrente.com"
-                  value={form.cta_find}
-                  onChange={(e) => handleChange('cta_find', e.target.value)}
-                  className="form-input"
-                />
+                <input type="text" placeholder="https://link-do-concorrente.com" value={form.cta_find} onChange={(e) => handleChange('cta_find', e.target.value)} className="form-input" />
               </div>
               <div className="form-group">
                 <label>Substituir por</label>
-                <input
-                  type="text"
-                  placeholder="https://meu-link.com"
-                  value={form.cta_replace}
-                  onChange={(e) => handleChange('cta_replace', e.target.value)}
-                  className="form-input"
-                />
+                <input type="text" placeholder="https://meu-link.com" value={form.cta_replace} onChange={(e) => handleChange('cta_replace', e.target.value)} className="form-input" />
               </div>
             </div>
             <span className="field-hint">O sistema trocará automaticamente o link/CTA nos posts clonados.</span>
+
+            {/* LEGENDA PERSONALIZADA */}
+            {form.channel_type === 'clone' && (
+              <>
+                <div className="form-section-label">
+                  <Type size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                  Legenda Personalizada (opcional)
+                </div>
+
+                <div className="caption-toggle">
+                  <label className="toggle-label">
+                    <input
+                      type="checkbox"
+                      checked={form.use_custom_caption}
+                      onChange={(e) => handleChange('use_custom_caption', e.target.checked)}
+                    />
+                    <span className="toggle-slider"></span>
+                    <span>Ativar legenda personalizada</span>
+                  </label>
+                  {form.use_custom_caption && (
+                    <select value={form.caption_mode} onChange={(e) => handleChange('caption_mode', e.target.value)} className="form-select caption-mode-select">
+                      <option value="replace">Substituir legenda original</option>
+                      <option value="append">Adicionar abaixo da original</option>
+                    </select>
+                  )}
+                </div>
+
+                {form.use_custom_caption && (
+                  <div className="caption-editor">
+                    <div className="caption-toolbar">
+                      <button type="button" onClick={() => applyFormat('<b>', '</b>')} title="Negrito"><Bold size={14} /></button>
+                      <button type="button" onClick={() => applyFormat('<i>', '</i>')} title="Itálico"><Italic size={14} /></button>
+                      <button type="button" onClick={() => applyFormat('<u>', '</u>')} title="Sublinhado"><Underline size={14} /></button>
+                      <button type="button" onClick={() => applyFormat('<s>', '</s>')} title="Tachado"><Strikethrough size={14} /></button>
+                      <span className="toolbar-sep"></span>
+                      <button type="button" onClick={() => applyFormat('<code>', '</code>')} title="Mono/Código"><Code size={14} /></button>
+                      <button type="button" onClick={() => applyFormat('<blockquote>', '</blockquote>')} title="Citação"><Quote size={14} /></button>
+                      <button type="button" onClick={addLinkFormat} title="Link"><LinkIcon size={14} /></button>
+                    </div>
+                    <textarea
+                      ref={captionRef}
+                      className="caption-textarea"
+                      value={form.custom_caption}
+                      onChange={(e) => handleChange('custom_caption', e.target.value)}
+                      placeholder="Digite a legenda personalizada com formatação HTML do Telegram..."
+                      rows={4}
+                    />
+                    <span className="field-hint">
+                      Suporta HTML do Telegram: &lt;b&gt;negrito&lt;/b&gt;, &lt;i&gt;itálico&lt;/i&gt;, &lt;u&gt;sublinhado&lt;/u&gt;, &lt;s&gt;tachado&lt;/s&gt;, &lt;code&gt;mono&lt;/code&gt;, &lt;a href="url"&gt;link&lt;/a&gt;
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
 
             {/* BOTÃO SALVAR */}
             <button type="submit" className="canais-submit-btn" disabled={saving}>
@@ -390,9 +483,10 @@ export function GerenciarCanais() {
                       {channelTypeLabels[canal.channel_type] || canal.channel_type}
                     </span>
                     {canal.bot_name && (
-                      <span className="bot-badge">
-                        <Bot size={12} /> @{canal.bot_username}
-                      </span>
+                      <span className="bot-badge"><Bot size={12} /> @{canal.bot_username}</span>
+                    )}
+                    {canal.use_custom_caption && (
+                      <span className="caption-badge"><Type size={11} /> Legenda</span>
                     )}
                   </div>
                   <div className={`canal-card-status ${canal.is_active ? 'active' : 'off'}`}>
@@ -407,67 +501,62 @@ export function GerenciarCanais() {
                     <span className="route-block-name">{canal.origin_channel_name || 'Sem nome'}</span>
                     <span className="route-block-id">
                       {canal.origin_channel_id}
-                      <button className="copy-btn-sm" onClick={() => copyToClipboard(canal.origin_channel_id)} title="Copiar">
-                        <Copy size={11} />
-                      </button>
+                      <button className="copy-btn-sm" onClick={() => copyToClipboard(canal.origin_channel_id)} title="Copiar"><Copy size={11} /></button>
                     </span>
                   </div>
-                  <div className="route-arrow-mid">
-                    <ArrowRight size={18} />
-                  </div>
+                  <div className="route-arrow-mid"><ArrowRight size={18} /></div>
                   <div className="route-block dest">
-                    <span className="route-block-label">DESTINO</span>
+                    <span className="route-block-label">DESTINO PRINCIPAL</span>
                     <span className="route-block-name">{canal.dest_channel_name || 'Sem nome'}</span>
                     <span className="route-block-id">
                       {canal.dest_channel_id}
-                      <button className="copy-btn-sm" onClick={() => copyToClipboard(canal.dest_channel_id)} title="Copiar">
-                        <Copy size={11} />
-                      </button>
+                      <button className="copy-btn-sm" onClick={() => copyToClipboard(canal.dest_channel_id)} title="Copiar"><Copy size={11} /></button>
                     </span>
                   </div>
                 </div>
 
+                {/* DESTINOS EXTRAS */}
+                {canal.destinations && canal.destinations.length > 0 && (
+                  <div className="extra-dests-card">
+                    <span className="extra-dests-label"><Target size={12} /> +{canal.destinations.length} destino{canal.destinations.length > 1 ? 's' : ''} extra{canal.destinations.length > 1 ? 's' : ''}</span>
+                    {canal.destinations.map((d) => (
+                      <div key={d.id} className="extra-dest-card-item">
+                        <span>{d.dest_channel_name}</span>
+                        <span className="extra-dest-card-id">{d.dest_channel_id}</span>
+                        <button className="extra-dest-card-remove" onClick={() => handleRemoveDestFromChannel(canal.id, d.id, d.dest_channel_name)} title="Remover destino">
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* DETALHES */}
                 <div className="canal-card-details">
-                  <div className="detail-item">
-                    <Clock size={13} />
-                    <span>A cada {canal.interval_minutes}min</span>
-                  </div>
-                  <div className="detail-item">
-                    <Repeat size={13} />
-                    <span>{postOrderLabels[canal.post_order] || canal.post_order}</span>
-                  </div>
+                  <div className="detail-item"><Clock size={13} /><span>A cada {canal.interval_minutes}min</span></div>
+                  <div className="detail-item"><Repeat size={13} /><span>{postOrderLabels[canal.post_order] || canal.post_order}</span></div>
                   {canal.schedule_start && canal.schedule_end && (
-                    <div className="detail-item">
-                      <Clock size={13} />
-                      <span>{canal.schedule_start} — {canal.schedule_end}</span>
-                    </div>
+                    <div className="detail-item"><Clock size={13} /><span>{canal.schedule_start} — {canal.schedule_end}</span></div>
                   )}
                   {canal.cta_find && (
-                    <div className="detail-item">
-                      <MessageSquare size={13} />
-                      <span>CTA: substituindo link</span>
-                    </div>
+                    <div className="detail-item"><MessageSquare size={13} /><span>CTA: substituindo link</span></div>
                   )}
-                  <div className="detail-item">
-                    <Layers size={13} />
-                    <span>{canal.total_forwarded} enviados</span>
-                  </div>
+                  <div className="detail-item"><Layers size={13} /><span>{canal.total_forwarded} enviados</span></div>
+                  {(canal.destinations?.length > 0) && (
+                    <div className="detail-item"><Target size={13} /><span>{1 + canal.destinations.length} destinos</span></div>
+                  )}
                 </div>
 
                 {/* AÇÕES */}
                 <div className="canal-card-actions">
-                  <button
-                    className={`canal-toggle-btn ${canal.is_active ? 'active' : ''}`}
-                    onClick={() => handleToggle(canal.id)}
-                  >
+                  <button className="canal-adddest-btn" onClick={() => handleAddDestToChannel(canal.id)} title="Adicionar destino extra">
+                    <PlusCircle size={14} /> Destino
+                  </button>
+                  <button className={`canal-toggle-btn ${canal.is_active ? 'active' : ''}`} onClick={() => handleToggle(canal.id)}>
                     {canal.is_active ? <PowerOff size={14} /> : <Power size={14} />}
                     {canal.is_active ? 'Pausar' : 'Ativar'}
                   </button>
-                  <button
-                    className="canal-delete-btn"
-                    onClick={() => handleDelete(canal.id, canal.origin_channel_name || canal.origin_channel_id)}
-                  >
+                  <button className="canal-delete-btn" onClick={() => handleDelete(canal.id, canal.origin_channel_name || canal.origin_channel_id)}>
                     <Trash2 size={14} /> Remover
                   </button>
                 </div>

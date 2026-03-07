@@ -65,6 +65,11 @@ export const channelService = {
   create: async (data) => (await api.post('/api/autopost/channels', data)).data,
   remove: async (id) => (await api.delete(`/api/autopost/channels/${id}`)).data,
   toggle: async (id) => (await api.post(`/api/autopost/channels/${id}/toggle`)).data,
+  // Destinos extras
+  addDestination: async (channelId, data) => (await api.post(`/api/autopost/channels/${channelId}/destinations`, data)).data,
+  removeDestination: async (channelId, destId) => (await api.delete(`/api/autopost/channels/${channelId}/destinations/${destId}`)).data,
+  // Legenda personalizada
+  updateCaption: async (channelId, data) => (await api.put(`/api/autopost/channels/${channelId}/caption`, data)).data,
 };
 
 export default api;
