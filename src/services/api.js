@@ -63,12 +63,11 @@ export const botService = {
 export const channelService = {
   list: async () => (await api.get('/api/autopost/channels')).data,
   create: async (data) => (await api.post('/api/autopost/channels', data)).data,
+  update: async (id, data) => (await api.put(`/api/autopost/channels/${id}`, data)).data,
   remove: async (id) => (await api.delete(`/api/autopost/channels/${id}`)).data,
   toggle: async (id) => (await api.post(`/api/autopost/channels/${id}/toggle`)).data,
-  // Destinos extras
   addDestination: async (channelId, data) => (await api.post(`/api/autopost/channels/${channelId}/destinations`, data)).data,
   removeDestination: async (channelId, destId) => (await api.delete(`/api/autopost/channels/${channelId}/destinations/${destId}`)).data,
-  // Legenda personalizada
   updateCaption: async (channelId, data) => (await api.put(`/api/autopost/channels/${channelId}/caption`, data)).data,
 };
 

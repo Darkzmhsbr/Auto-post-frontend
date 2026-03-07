@@ -869,3 +869,85 @@
   .canal-card-actions { flex-wrap: wrap; }
   .canal-adddest-btn { flex: 1; justify-content: center; }
 }
+/* ==========================================
+   BOTÃO EDITAR
+   ========================================== */
+.canal-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 8px;
+  color: #3b82f6;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.canal-edit-btn:hover { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); }
+
+/* ==========================================
+   CTA MODE SELECTOR
+   ========================================== */
+.cta-mode-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.cta-mode-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cta-mode-option input { display: none; }
+
+.cta-mode-option:hover { border-color: rgba(195, 51, 255, 0.2); }
+
+.cta-mode-option.active {
+  border-color: rgba(195, 51, 255, 0.4);
+  background: rgba(195, 51, 255, 0.05);
+}
+
+.cta-mode-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+
+.cta-mode-option.active .cta-mode-title { color: #c333ff; }
+
+.cta-mode-desc {
+  font-size: 0.75rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Smart CTA badge no card */
+.smart-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  background: rgba(249, 115, 22, 0.08);
+  color: #f97316;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .cta-mode-selector { flex-direction: column; }
+  .canal-card-actions { flex-wrap: wrap; }
+  .canal-edit-btn { flex: 1; justify-content: center; }
+}
