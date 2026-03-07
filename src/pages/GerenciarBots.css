@@ -1,0 +1,540 @@
+/* ==========================================
+   GERENCIAR BOTS - ZENYX AUTOPOST
+   ========================================== */
+
+.bots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeUp 0.4s ease;
+}
+
+.bots-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #888;
+}
+
+/* SPINNER */
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+.bots-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bots-header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bots-header p {
+  color: #a3a3a3;
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* ==========================================
+   FEEDBACK TOAST
+   ========================================== */
+.bots-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+.bots-toast.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
+
+.bots-toast.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   FORMULÁRIO CARD
+   ========================================== */
+.bots-form-card {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.bots-form-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.bots-form-title h2 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.bots-form-subtitle {
+  color: #888;
+  font-size: 0.85rem;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.bots-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* FORM GROUP */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.form-input {
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  border-color: rgba(195, 51, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(195, 51, 255, 0.08);
+}
+
+.form-input::placeholder {
+  color: #444;
+}
+
+.form-input.input-valid {
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.form-input.input-invalid {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* TOKEN INPUT WRAPPER */
+.token-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.token-input-wrapper .form-input {
+  width: 100%;
+  padding-right: 72px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.token-toggle {
+  position: absolute;
+  right: 36px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  transition: color 0.2s;
+}
+
+.token-toggle:hover {
+  color: #c333ff;
+}
+
+.token-status-icon {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* BOT PREVIEW */
+.bot-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 8px;
+  color: #22c55e;
+  font-size: 0.85rem;
+  animation: fadeUp 0.3s ease;
+}
+
+.field-error {
+  color: #ef4444;
+  font-size: 0.8rem;
+}
+
+.field-hint {
+  color: #555;
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+
+/* FORM ROW (ORIGEM → DESTINO) */
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.form-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 30px;
+  color: #c333ff;
+  flex-shrink: 0;
+}
+
+/* BOTÃO SUBMIT */
+.bots-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #c333ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.bots-submit-btn:hover:not(:disabled) {
+  background: #a020d0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(195, 51, 255, 0.25);
+}
+
+.bots-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   LISTA DE BOTS
+   ========================================== */
+.bots-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bots-list-section h2 {
+  font-size: 1.15rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* EMPTY STATE */
+.bots-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  background: #12121a;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: #555;
+  text-align: center;
+  gap: 8px;
+}
+
+.bots-empty p {
+  color: #888;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.bots-empty span {
+  font-size: 0.85rem;
+}
+
+/* CARDS GRID */
+.bots-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+/* BOT CARD */
+.bot-card {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.bot-card:hover {
+  border-color: rgba(195, 51, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* CARD HEADER */
+.bot-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bot-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(195, 51, 255, 0.1);
+  color: #c333ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bot-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bot-card-info h3 {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bot-username {
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.bot-card-status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.bot-card-status.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.bot-card-status.inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* CARD ROUTE (ORIGEM → DESTINO) */
+.bot-card-route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.route-point {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.route-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+}
+
+.route-id {
+  font-size: 0.82rem;
+  color: #ccc;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  color: #c333ff;
+}
+
+.route-arrow {
+  color: #c333ff;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* CARD ACTIONS */
+.bot-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 12px;
+}
+
+.bot-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bot-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================
+   RESPONSIVO
+   ========================================== */
+@media (max-width: 768px) {
+  .bots-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .bots-form-card {
+    padding: 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-arrow {
+    padding-top: 0;
+    transform: rotate(90deg);
+    align-self: center;
+  }
+
+  .bots-submit-btn {
+    width: 100%;
+  }
+
+  .bots-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bot-card-route {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .route-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .bots-form-card {
+    padding: 16px;
+  }
+
+  .bot-card {
+    padding: 16px;
+  }
+}

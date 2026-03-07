@@ -47,4 +47,16 @@ export const telegramService = {
   logout: async () => (await api.post('/api/telegram/logout')).data,
 };
 
+// 👇 NOVO BLOCO: SERVIÇOS DOS BOTS (PONTE) 👇
+export const botService = {
+  list: async () => (await api.get('/api/bots')).data,
+  create: async (data) => (await api.post('/api/bots', data)).data,
+  remove: async (id) => (await api.delete(`/api/bots/${id}`)).data,
+  validate: async (token) => {
+    // Valida o token diretamente na API do Telegram (client-side preview)
+    const resp = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+    return resp.json();
+  },
+};
+
 export default api;
