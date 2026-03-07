@@ -36,6 +36,17 @@ export function FilaEnvios() {
     }
   };
 
+  const handleClearAll = async () => {
+    if (!window.confirm('Tem certeza que deseja limpar TODA a fila de envios?')) return;
+    try {
+      const { data } = await api.delete('/api/autopost/queue');
+      showFeedback(data.message || 'Fila limpa!', 'success');
+      carregarFila();
+    } catch {
+      showFeedback('Erro ao limpar fila.', 'error');
+    }
+  };
+
   const showFeedback = (message, type) => {
     setFeedback({ message, type });
     setTimeout(() => setFeedback(null), 3000);
@@ -73,6 +84,11 @@ export function FilaEnvios() {
           <button className="fila-refresh-btn" onClick={carregarFila}>
             <RefreshCw size={16} /> Atualizar
           </button>
+          {queue.length > 0 && (
+            <button className="fila-clear-btn" onClick={handleClearAll}>
+              <Trash2 size={14} /> Limpar Tudo
+            </button>
+          )}
         </div>
       </div>
 
