@@ -35,4 +35,9 @@ export const authService = {
   getMe: async () => (await api.get('/api/auth/me')).data,
 };
 
+// 👇 ADICIONE ESTE BLOCO NOVO AQUI 👇
+export const dashboardService = {
+  getStats: async () => (await api.get('/api/autopost/stats')).data,
+};
+
 export default api;

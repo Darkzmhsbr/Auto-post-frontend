@@ -1,0 +1,19 @@
+.main-header {
+  height: 70px; position: fixed; top: 0; right: 0; left: 260px; /* Mesma largura da sidebar */
+  background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(10px);
+  border-bottom: 1px solid #1a1a2a; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 30px; transition: left 0.3s ease;
+}
+
+.header-left { display: flex; align-items: center; gap: 15px; }
+.mobile-menu-btn { display: none; background: none; border: none; color: #fff; cursor: pointer; padding: 5px; }
+.header-title { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; font-size: 1.1rem; }
+
+.user-badge { display: flex; align-items: center; cursor: pointer; }
+.user-avatar { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #c333ff, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem; }
+
+@media (max-width: 768px) {
+  .main-header { left: 0; padding: 0 15px; } /* Header ocupa 100% da tela */
+  .mobile-menu-btn { display: flex; }
+}
