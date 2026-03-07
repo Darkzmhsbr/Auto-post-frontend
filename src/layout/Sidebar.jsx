@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Smartphone, Layers, ListOrdered, 
-  History, X, LogOut, ExternalLink
+  History, X, LogOut, ExternalLink, Bot, ChevronDown, ChevronRight, PlusCircle
 } from 'lucide-react';
 import './Sidebar.css';
 
 export function Sidebar({ isOpen, onClose }) {
+  // Estado para controlar se o menu de Bots está aberto ou fechado
+  const [isBotsOpen, setIsBotsOpen] = useState(false);
+
   const handleLogout = () => {
     localStorage.removeItem('zenyx_token');
     window.location.href = '/login';
@@ -32,11 +35,34 @@ export function Sidebar({ isOpen, onClose }) {
         </NavLink>
 
         <NavLink to="/sessao" className="nav-item" onClick={onClose}>
-          <Smartphone size={20} /> <span>Sessão Telegram</span>
+          <Smartphone size={20} /> <span>Conta Cliente (Sessão)</span>
         </NavLink>
 
+        {/* 👇 MENU SANFONA DE BOTS 👇 */}
+        <div className="nav-dropdown">
+          <div 
+            className={`nav-item dropdown-toggle ${isBotsOpen ? 'active-dropdown' : ''}`} 
+            onClick={() => setIsBotsOpen(!isBotsOpen)}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Bot size={20} /> <span>Gerenciar Bots</span>
+            </div>
+            {isBotsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </div>
+          
+          {/* Sub-menus que aparecem quando clica */}
+          <div className={`dropdown-content ${isBotsOpen ? 'show' : ''}`}>
+            <NavLink to="/criar-bot" className="sub-nav-item" onClick={onClose}>
+              <PlusCircle size={16} /> <span>Criar novo Bot</span>
+            </NavLink>
+            <NavLink to="/meus-bots" className="sub-nav-item" onClick={onClose}>
+              <Bot size={16} /> <span>Meus Bots</span>
+            </NavLink>
+          </div>
+        </div>
+
         <NavLink to="/canais" className="nav-item" onClick={onClose}>
-          <Layers size={20} /> <span>Meus Canais</span>
+          <Layers size={20} /> <span>Automações (Canais)</span>
         </NavLink>
 
         <NavLink to="/fila" className="nav-item" onClick={onClose}>
