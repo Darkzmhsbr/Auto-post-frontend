@@ -69,6 +69,46 @@ export const channelService = {
   addDestination: async (channelId, data) => (await api.post(`/api/autopost/channels/${channelId}/destinations`, data)).data,
   removeDestination: async (channelId, destId) => (await api.delete(`/api/autopost/channels/${channelId}/destinations/${destId}`)).data,
   updateCaption: async (channelId, data) => (await api.put(`/api/autopost/channels/${channelId}/caption`, data)).data,
+  // Tópicos
+  listTopics: async (channelId) => (await api.get(`/api/autopost/channels/${channelId}/topics`)).data,
+  addTopic: async (channelId, data) => (await api.post(`/api/autopost/channels/${channelId}/topics`, data)).data,
+  removeTopic: async (channelId, topicId) => (await api.delete(`/api/autopost/channels/${channelId}/topics/${topicId}`)).data,
+};
+
+// 👇 NOVO BLOCO: SERVIÇOS DO SUPER ADMIN 👇
+export const adminService = {
+  check: async () => (await api.get('/api/admin/check')).data,
+  getStats: async () => (await api.get('/api/admin/stats')).data,
+  listUsers: async () => (await api.get('/api/admin/users')).data,
+  getUserChannels: async (userId) => (await api.get(`/api/admin/users/${userId}/channels`)).data,
+  toggleUser: async (userId) => (await api.post(`/api/admin/users/${userId}/toggle`)).data,
+  deleteUser: async (userId) => (await api.delete(`/api/admin/users/${userId}`)).data,
+  promote: async (userId) => (await api.post(`/api/admin/promote/${userId}`)).data,
+  demote: async (userId) => (await api.delete(`/api/admin/demote/${userId}`)).data,
+};
+
+// 👇 SERVIÇO DE EMOJIS PREMIUM (usa API do Zenyx VIPs principal) 👇
+export const premiumEmojiService = {
+  getCatalog: async () => {
+    try {
+      const mainApiUrl = 'https://api.zenyxvips.com';
+      const token = localStorage.getItem('zenyx_token');
+      const resp = await fetch(`${mainApiUrl}/api/premium-emojis/catalog`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      return resp.json();
+    } catch { return { packs: [], total_emojis: 0 }; }
+  },
+  search: async (query) => {
+    try {
+      const mainApiUrl = 'https://api.zenyxvips.com';
+      const token = localStorage.getItem('zenyx_token');
+      const resp = await fetch(`${mainApiUrl}/api/premium-emojis/search?q=${query}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      return resp.json();
+    } catch { return { emojis: [] }; }
+  },
 };
 
 export default api;

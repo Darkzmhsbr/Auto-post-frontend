@@ -1,0 +1,393 @@
+/* ============================================================
+   ✨ PREMIUM EMOJI PICKER - COMPONENTE REUTILIZÁVEL
+   ============================================================ */
+
+/* Wrapper do botão trigger */
+.pep-trigger-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Botão que abre o picker */
+.pep-trigger-btn {
+  background: linear-gradient(135deg, rgba(195, 51, 255, 0.15), rgba(168, 85, 247, 0.1));
+  border: 1px solid rgba(195, 51, 255, 0.3);
+  color: #c9a0ff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.pep-trigger-btn:hover {
+  background: linear-gradient(135deg, rgba(195, 51, 255, 0.25), rgba(168, 85, 247, 0.2));
+  border-color: #c333ff;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(195, 51, 255, 0.2);
+}
+
+.pep-trigger-btn.active {
+  background: rgba(195, 51, 255, 0.25);
+  border-color: #c333ff;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(195, 51, 255, 0.3);
+}
+
+.pep-trigger-btn .pep-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.pep-trigger-btn .pep-badge {
+  background: #c333ff;
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   PAINEL DO PICKER (DROPDOWN)
+   ============================================================ */
+.pep-panel {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-height: 420px;
+  background: #1a1a2e;
+  border: 1px solid rgba(195, 51, 255, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(195, 51, 255, 0.1);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: pepSlideIn 0.2s ease-out;
+}
+
+@keyframes pepSlideIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header do painel */
+.pep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.pep-header h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pep-close-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: all 0.15s;
+}
+
+.pep-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Busca */
+.pep-search {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pep-search input {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pep-search input::placeholder {
+  color: #555;
+}
+
+.pep-search input:focus {
+  border-color: rgba(195, 51, 255, 0.5);
+}
+
+/* Tabs de categorias */
+.pep-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  scrollbar-width: none;
+}
+
+.pep-tabs::-webkit-scrollbar { display: none; }
+
+.pep-tab {
+  background: none;
+  border: none;
+  color: #666;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pep-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #aaa;
+}
+
+.pep-tab.active {
+  background: rgba(195, 51, 255, 0.2);
+  color: #c9a0ff;
+  font-weight: 600;
+}
+
+.pep-tab .tab-icon {
+  font-size: 0.95rem;
+}
+
+/* Grade de emojis */
+.pep-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(195, 51, 255, 0.2) transparent;
+}
+
+.pep-grid-container::-webkit-scrollbar { width: 4px; }
+.pep-grid-container::-webkit-scrollbar-track { background: transparent; }
+.pep-grid-container::-webkit-scrollbar-thumb { background: rgba(195, 51, 255, 0.3); border-radius: 4px; }
+
+.pep-pack-label {
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  padding: 6px 4px 4px;
+  margin-top: 6px;
+}
+
+.pep-pack-label:first-child {
+  margin-top: 0;
+}
+
+.pep-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+/* Cada emoji individual */
+.pep-emoji-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: all 0.15s;
+  position: relative;
+  background: transparent;
+  padding: 0;
+}
+
+.pep-emoji-item:hover {
+  background: rgba(195, 51, 255, 0.15);
+  border-color: rgba(195, 51, 255, 0.3);
+  transform: scale(1.15);
+  z-index: 2;
+}
+
+.pep-emoji-item:active {
+  transform: scale(0.95);
+}
+
+/* Tooltip no hover */
+.pep-emoji-item .pep-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #ccc;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  border: 1px solid #333;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.pep-emoji-item:hover .pep-tooltip {
+  display: block;
+}
+
+/* Badge "animated" */
+.pep-emoji-item .pep-animated-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  background: #a855f7;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+/* Estado vazio */
+.pep-empty {
+  text-align: center;
+  padding: 30px 20px;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.pep-empty-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+/* Loading */
+.pep-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #888;
+  font-size: 0.85rem;
+  gap: 8px;
+}
+
+.pep-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(195, 51, 255, 0.2);
+  border-top-color: #c333ff;
+  border-radius: 50%;
+  animation: pepSpin 0.7s linear infinite;
+}
+
+@keyframes pepSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer info */
+.pep-footer {
+  padding: 8px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pep-footer-text {
+  font-size: 0.68rem;
+  color: #555;
+}
+
+.pep-footer-count {
+  font-size: 0.68rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* Overlay para fechar clicando fora */
+.pep-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+}
+
+/* ============================================================
+   RESPONSIVIDADE
+   ============================================================ */
+@media (max-width: 480px) {
+  .pep-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 60vh;
+    border-radius: 14px 14px 0 0;
+    border-bottom: none;
+  }
+
+  .pep-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  
+  .pep-emoji-item {
+    font-size: 1.3rem;
+  }
+}
+/* ✨ Badge numérico para emojis duplicados (mesmo fallback) */
+.pep-dup-badge {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  background: #c333ff;
+  color: #fff;
+  font-size: 0.5rem;
+  font-weight: 700;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+}

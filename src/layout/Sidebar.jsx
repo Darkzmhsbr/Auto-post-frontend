@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Smartphone, Layers, ListOrdered, 
-  History, X, LogOut, ExternalLink, Bot
+  History, X, LogOut, ExternalLink, Bot, Shield
 } from 'lucide-react';
+import { adminService } from '../services/api';
 import './Sidebar.css';
 
 export function Sidebar({ isOpen, onClose }) {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    adminService.check().then(data => setIsAdmin(data.is_admin)).catch(() => {});
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('zenyx_token');
@@ -48,6 +54,16 @@ export function Sidebar({ isOpen, onClose }) {
         <NavLink to="/logs" className="nav-item" onClick={onClose}>
           <History size={20} /> <span>Histórico</span>
         </NavLink>
+
+        {isAdmin && (
+          <>
+            <div className="divider"></div>
+            <div className="nav-label">Administração</div>
+            <NavLink to="/admin" className="nav-item admin-btn" onClick={onClose}>
+              <Shield size={20} /> <span>Super Admin</span>
+            </NavLink>
+          </>
+        )}
 
         <div className="divider"></div>
 

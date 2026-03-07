@@ -7,6 +7,7 @@ import { GerenciarBots } from './pages/GerenciarBots'; // 👇 TELA DE GERENCIAR
 import { GerenciarCanais } from './pages/GerenciarCanais'; // 👇 TELA DE CANAIS/PONTES
 import { FilaEnvios } from './pages/FilaEnvios'; // 👇 TELA DA FILA DE ENVIOS
 import { Historico } from './pages/Historico'; // 👇 TELA DE HISTÓRICO/LOGS
+import { SuperAdminAutoPost } from './pages/SuperAdminAutoPost'; // 👇 SUPER ADMIN
 import { MainLayout } from './layout/MainLayout';
 
 function App() {
@@ -17,13 +18,12 @@ function App() {
 
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* 👇 COLOCANDO NOSSA TELA AQUI */}
           <Route path="/sessao" element={<SessaoTelegram />} />
           <Route path="/bots" element={<GerenciarBots />} />
-          
           <Route path="/canais" element={<GerenciarCanais />} />
           <Route path="/fila" element={<FilaEnvios />} />
           <Route path="/logs" element={<Historico />} />
+          <Route path="/admin" element={<SuperAdminAutoPost />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
