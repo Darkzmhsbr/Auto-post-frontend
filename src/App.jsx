@@ -4,6 +4,7 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { SessaoTelegram } from './pages/SessaoTelegram'; // 👇 IMPORTANDO A NOVA TELA
 import { GerenciarBots } from './pages/GerenciarBots'; // 👇 TELA DE GERENCIAR BOTS
+import { GerenciarCanais } from './pages/GerenciarCanais'; // 👇 TELA DE CANAIS/PONTES
 import { MainLayout } from './layout/MainLayout';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
           <Route path="/sessao" element={<SessaoTelegram />} />
           <Route path="/bots" element={<GerenciarBots />} />
           
-          <Route path="/canais" element={<h2 style={{color:'white', padding: 20}}>Gerenciar Canais em breve</h2>} />
+          <Route path="/canais" element={<GerenciarCanais />} />
           <Route path="/fila" element={<h2 style={{color:'white', padding: 20}}>Fila de Envios em breve</h2>} />
           <Route path="/logs" element={<h2 style={{color:'white', padding: 20}}>Histórico em breve</h2>} />
         </Route>

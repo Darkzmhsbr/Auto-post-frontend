@@ -59,4 +59,12 @@ export const botService = {
   },
 };
 
+// 👇 NOVO BLOCO: SERVIÇOS DE CANAIS (AUTOPOST) 👇
+export const channelService = {
+  list: async () => (await api.get('/api/autopost/channels')).data,
+  create: async (data) => (await api.post('/api/autopost/channels', data)).data,
+  remove: async (id) => (await api.delete(`/api/autopost/channels/${id}`)).data,
+  toggle: async (id) => (await api.post(`/api/autopost/channels/${id}/toggle`)).data,
+};
+
 export default api;

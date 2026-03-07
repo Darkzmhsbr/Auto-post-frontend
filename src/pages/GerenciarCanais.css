@@ -1,0 +1,598 @@
+/* ==========================================
+   GERENCIAR CANAIS - ZENYX AUTOPOST
+   ========================================== */
+
+.canais-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeUp 0.4s ease;
+}
+
+.canais-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #888;
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+.canais-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.canais-header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.canais-header p {
+  color: #a3a3a3;
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+}
+
+.canais-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #c333ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.canais-add-btn:hover {
+  background: #a020d0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(195, 51, 255, 0.25);
+}
+
+/* ==========================================
+   FEEDBACK TOAST
+   ========================================== */
+.canais-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+.canais-toast.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
+
+.canais-toast.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   FORMULÁRIO CARD
+   ========================================== */
+.canais-form-card {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 28px;
+  animation: fadeUp 0.3s ease;
+}
+
+.canais-form-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.canais-form-title h2 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.canais-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* FORM GROUP */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.form-input, .form-select {
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.form-select option {
+  background: #12121a;
+  color: #fff;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: rgba(195, 51, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(195, 51, 255, 0.08);
+}
+
+.form-input::placeholder {
+  color: #444;
+}
+
+.field-hint {
+  color: #555;
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+
+/* FORM ROWS */
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* SECTION LABELS */
+.form-section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #c333ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(195, 51, 255, 0.1);
+}
+
+/* ROUTE ARROW BETWEEN ORIGIN/DEST */
+.form-route-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #c333ff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.7;
+  padding: 4px 0;
+}
+
+/* SUBMIT */
+.canais-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #c333ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.canais-submit-btn:hover:not(:disabled) {
+  background: #a020d0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(195, 51, 255, 0.25);
+}
+
+.canais-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   LISTA DE CANAIS
+   ========================================== */
+.canais-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.canais-list-section h2 {
+  font-size: 1.15rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* EMPTY STATE */
+.canais-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  background: #12121a;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: #555;
+  text-align: center;
+  gap: 8px;
+}
+
+.canais-empty p {
+  color: #888;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.canais-empty span {
+  font-size: 0.85rem;
+}
+
+/* CARDS GRID */
+.canais-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+/* CANAL CARD */
+.canal-card {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.3s ease;
+}
+
+.canal-card:hover {
+  border-color: rgba(195, 51, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.canal-card.inactive {
+  opacity: 0.6;
+}
+
+/* CARD HEADER */
+.canal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.canal-card-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.type-badge.clone {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.type-badge.forward {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.type-badge.spy {
+  background: rgba(195, 51, 255, 0.1);
+  color: #c333ff;
+}
+
+.bot-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  background: rgba(195, 51, 255, 0.08);
+  color: #c333ff;
+}
+
+.canal-card-status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.canal-card-status.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.canal-card-status.off {
+  background: rgba(239, 68, 68, 0.08);
+  color: #888;
+}
+
+/* ROUTE VISUAL */
+.canal-card-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.route-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.route-block-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.route-block-name {
+  font-size: 0.88rem;
+  color: #e5e5e5;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-block-id {
+  font-size: 0.75rem;
+  color: #777;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copy-btn-sm {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 1px;
+  display: flex;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.copy-btn-sm:hover {
+  color: #c333ff;
+}
+
+.route-arrow-mid {
+  color: #c333ff;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* DETAILS ROW */
+.canal-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: #888;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* ACTIONS */
+.canal-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 12px;
+}
+
+.canal-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 8px;
+  color: #22c55e;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canal-toggle-btn.active {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+
+.canal-toggle-btn:hover {
+  opacity: 0.8;
+}
+
+.canal-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canal-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================
+   RESPONSIVO
+   ========================================== */
+@media (max-width: 768px) {
+  .canais-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .canais-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .canais-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .canais-form-card {
+    padding: 20px;
+  }
+
+  .form-row, .form-row-3 {
+    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .canais-submit-btn {
+    width: 100%;
+  }
+
+  .canais-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .canal-card-route {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .route-arrow-mid {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+
+  .canal-card-actions {
+    flex-direction: column;
+  }
+
+  .canal-toggle-btn, .canal-delete-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .canais-form-card {
+    padding: 16px;
+  }
+
+  .canal-card {
+    padding: 16px;
+  }
+}
