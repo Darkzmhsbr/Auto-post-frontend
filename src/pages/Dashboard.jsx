@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { dashboardService } from '../services/api';
 import { 
-  Layers, ToggleRight, Smartphone, Activity, AlertTriangle, CheckCircle 
+  Layers, ToggleRight, Smartphone, Activity, AlertTriangle, CheckCircle,
+  Bot, Target, Clock, RefreshCw, ArrowRight, Zap
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -12,6 +13,9 @@ export function Dashboard() {
 
   useEffect(() => {
     carregarDados();
+    // Auto-refresh a cada 30 segundos
+    const interval = setInterval(carregarDados, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const carregarDados = async () => {
@@ -33,16 +37,22 @@ export function Dashboard() {
     );
   }
 
-  // Verifica se a sessão do Telethon está ativa (por enquanto mockada como pendente)
   const isSessionActive = stats?.status_sessao === 'ativa';
+  const engineRunning = stats?.engine?.running;
+  const nextTick = stats?.engine?.next_tick;
 
   return (
     <div className="dashboard-container">
       
       {/* HEADER */}
       <div className="dashboard-header">
-        <h1>Visão Geral</h1>
-        <p>Acompanhe o desempenho das suas automações do Telegram.</p>
+        <div>
+          <h1>Visão Geral</h1>
+          <p>Acompanhe o desempenho das suas automações do Telegram.</p>
+        </div>
+        <button className="dash-refresh-btn" onClick={carregarDados}>
+          <RefreshCw size={16} />
+        </button>
       </div>
 
       {/* AVISO DE SESSÃO DO TELEGRAM */}
@@ -101,14 +111,63 @@ export function Dashboard() {
 
         <div className="stat-card">
           <div className="stat-icon orange">
-            <Smartphone size={28} />
+            <Bot size={28} />
           </div>
           <div className="stat-info">
-            <span className="stat-title">Status do Motor</span>
-            <span className="stat-value" style={{ fontSize: '1.2rem', marginTop: '5px' }}>
-              {stats?.engine?.running ? '🟢 Operante' : '🔴 Parado'}
-            </span>
+            <span className="stat-title">Bots Cadastrados</span>
+            <span className="stat-value">{stats?.total_bots || 0}</span>
           </div>
+        </div>
+      </div>
+
+      {/* STATUS DO MOTOR */}
+      <div className={`engine-status-card ${engineRunning ? 'running' : 'stopped'}`}>
+        <div className="engine-left">
+          <Zap size={22} />
+          <div>
+            <h3>Motor AutoPost</h3>
+            <p>{engineRunning ? 'Operante — verificando canais a cada 30 segundos' : 'Motor parado'}</p>
+          </div>
+        </div>
+        <div className="engine-right">
+          <div className="engine-stat">
+            <span className="engine-stat-label">Userbots</span>
+            <span className="engine-stat-value">{stats?.engine?.userbots_connected || 0}</span>
+          </div>
+          <div className="engine-stat">
+            <span className="engine-stat-label">Bots Ativos</span>
+            <span className="engine-stat-value">{stats?.engine?.bots_connected || 0}</span>
+          </div>
+          <div className={`engine-indicator ${engineRunning ? 'on' : 'off'}`}>
+            {engineRunning ? '🟢' : '🔴'}
+          </div>
+        </div>
+      </div>
+
+      {/* ATALHOS RÁPIDOS */}
+      <div className="quick-actions">
+        <h2>Ações Rápidas</h2>
+        <div className="quick-grid">
+          <Link to="/bots" className="quick-card">
+            <Bot size={24} />
+            <span>Gerenciar Bots</span>
+            <ArrowRight size={16} />
+          </Link>
+          <Link to="/canais" className="quick-card">
+            <Layers size={24} />
+            <span>Canais / Pontes</span>
+            <ArrowRight size={16} />
+          </Link>
+          <Link to="/fila" className="quick-card">
+            <Clock size={24} />
+            <span>Fila de Envios</span>
+            <ArrowRight size={16} />
+          </Link>
+          <Link to="/logs" className="quick-card">
+            <Activity size={24} />
+            <span>Histórico</span>
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
 
