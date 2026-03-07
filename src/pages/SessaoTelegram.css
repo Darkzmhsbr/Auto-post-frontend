@@ -105,9 +105,54 @@
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+/* ==========================================
+   BANNER MODO SÓ BOT (NOVO)
+   ========================================== */
+.bot-only-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(195, 51, 255, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.bot-only-icon {
+  color: #c333ff;
+  background: rgba(195, 51, 255, 0.15);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bot-only-text strong {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.bot-only-text p {
+  color: #ccc;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* RESPONSIVO */
 @media (max-width: 768px) {
   .connection-wrapper { grid-template-columns: 1fr; }
   .info-panel { order: 2; }
   .form-panel { order: 1; }
+  
+  .bot-only-banner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }

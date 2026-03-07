@@ -4,8 +4,9 @@ import {
   Layers, Plus, Trash2, CheckCircle, AlertCircle, Loader2,
   ArrowRight, Power, PowerOff, Clock, Repeat, Bot,
   MessageSquare, Copy, Bold, Italic, Underline, Strikethrough,
-  Code, Quote, Link as LinkIcon, Type, PlusCircle, Target, Edit3, X, Save
+  Code, Quote, Link as LinkIcon, Type, PlusCircle, Target, Edit3, X, Save, Hash
 } from 'lucide-react';
+import { PremiumEmojiPicker } from '../components/PremiumEmojiPicker'; // 🌟 IMPORT DO COMPONENTE PREMIUM EMOJI
 import './GerenciarCanais.css';
 
 const INITIAL_FORM = {
@@ -14,6 +15,7 @@ const INITIAL_FORM = {
   interval_minutes: 30, schedule_start: '', schedule_end: '',
   post_order: 'fifo', cta_find: '', cta_replace: '', cta_mode: 'exact',
   custom_caption: '', use_custom_caption: false, caption_mode: 'replace',
+  userbot_required: true, // 🌟 NOVO: ESTADO PARA O MODO "SÓ BOT"
 };
 
 export function GerenciarCanais() {
@@ -29,6 +31,12 @@ export function GerenciarCanais() {
   const [newDestName, setNewDestName] = useState('');
   const captionRef = useRef(null);
   const [form, setForm] = useState({ ...INITIAL_FORM });
+
+  // 🌟 ESTADOS PARA MAPEAMENTO DE TÓPICOS
+  const [expandedTopicId, setExpandedTopicId] = useState(null);
+  const [channelTopics, setChannelTopics] = useState([]);
+  const [topicOriginId, setTopicOriginId] = useState('');
+  const [topicDestId, setTopicDestId] = useState('');
 
   useEffect(() => { carregarDados(); }, []);
 
@@ -70,6 +78,7 @@ export function GerenciarCanais() {
       custom_caption: canal.custom_caption || '',
       use_custom_caption: canal.use_custom_caption || false,
       caption_mode: canal.caption_mode || 'replace',
+      userbot_required: canal.userbot_required !== false, // 🌟 CARREGA O ESTADO DO USERBOT (Padrão true)
     });
     setExtraDests([]);
     setShowForm(true);
@@ -101,6 +110,41 @@ export function GerenciarCanais() {
   const addLinkFormat = () => {
     const url = prompt("Digite a URL:", "https://");
     if (url) applyFormat(`<a href="${url}">`, '</a>');
+  };
+
+  // ==========================================
+  // LÓGICA DE TÓPICOS (CRUD) 🌟
+  // ==========================================
+  const handleToggleTopics = async (channelId) => {
+    if (expandedTopicId === channelId) {
+      setExpandedTopicId(null);
+    } else {
+      setExpandedTopicId(channelId);
+      try {
+        const topics = await channelService.listTopics(channelId);
+        setChannelTopics(topics);
+      } catch (error) { showFeedbackMsg('Erro ao carregar tópicos.', 'error'); }
+    }
+  };
+
+  const handleAddTopic = async (channelId) => {
+    if (!topicOriginId || !topicDestId) return;
+    try {
+      await channelService.addTopic(channelId, { origin_topic_id: parseInt(topicOriginId), dest_topic_id: parseInt(topicDestId) });
+      const topics = await channelService.listTopics(channelId);
+      setChannelTopics(topics);
+      setTopicOriginId(''); setTopicDestId('');
+      showFeedbackMsg('Tópico mapeado com sucesso!', 'success');
+    } catch (error) { showFeedbackMsg('Erro ao mapear tópico.', 'error'); }
+  };
+
+  const handleRemoveTopic = async (channelId, topicId) => {
+    try {
+      await channelService.removeTopic(channelId, topicId);
+      const topics = await channelService.listTopics(channelId);
+      setChannelTopics(topics);
+      showFeedbackMsg('Mapeamento removido!', 'success');
+    } catch (error) { showFeedbackMsg('Erro ao remover tópico.', 'error'); }
   };
 
   // ==========================================
@@ -151,6 +195,7 @@ export function GerenciarCanais() {
         cta_find: form.cta_find || null,
         cta_replace: form.cta_replace || null,
         custom_caption: form.custom_caption || null,
+        userbot_required: form.userbot_required, // 🌟 ENVIANDO O STATUS DO USERBOT
       };
 
       if (editingId) {
@@ -228,6 +273,18 @@ export function GerenciarCanais() {
                 </select>
               </div>
             )}
+
+            {/* 🌟 MODO SÓ BOT (Toggle do Userbot) */}
+            <div className="form-group" style={{ marginBottom: '8px' }}>
+              <label>Conexão da Conta</label>
+              <div className="caption-toggle" style={{ marginTop: '4px' }}>
+                <label className="toggle-label">
+                  <input type="checkbox" checked={form.userbot_required} onChange={(e) => handleChange('userbot_required', e.target.checked)} />
+                  <span className="toggle-slider"></span><span>Exigir Sessão do Userbot (Conta Pessoal)</span>
+                </label>
+              </div>
+              <span className="field-hint">Desative se quiser usar APENAS o Bot Oficial (sem conectar seu número na plataforma). Útil se o bot já for Admin de ambos os canais.</span>
+            </div>
 
             <div className="form-row-3">
               <div className="form-group">
@@ -336,6 +393,17 @@ export function GerenciarCanais() {
                 {form.use_custom_caption && (
                   <div className="caption-editor">
                     <div className="caption-toolbar">
+                      {/* 🌟 INTEGRAÇÃO DO COMPONENTE PREMIUM EMOJI */}
+                      <PremiumEmojiPicker compact={true} onSelect={(emoji) => {
+                        const textarea = captionRef.current;
+                        if (!textarea) return;
+                        const start = textarea.selectionStart;
+                        const text = form.custom_caption || '';
+                        const newText = text.substring(0, start) + emoji + text.substring(textarea.selectionEnd);
+                        handleChange('custom_caption', newText);
+                        setTimeout(() => { textarea.focus(); textarea.setSelectionRange(start + emoji.length, start + emoji.length); }, 0);
+                      }} />
+                      <span className="toolbar-sep"></span>
                       <button type="button" onClick={() => applyFormat('<b>', '</b>')} title="Negrito"><Bold size={14} /></button>
                       <button type="button" onClick={() => applyFormat('<i>', '</i>')} title="Itálico"><Italic size={14} /></button>
                       <button type="button" onClick={() => applyFormat('<u>', '</u>')} title="Sublinhado"><Underline size={14} /></button>
@@ -411,16 +479,44 @@ export function GerenciarCanais() {
                   {canal.cta_replace && (<div className="detail-item"><MessageSquare size={13} /><span>CTA: {canal.cta_mode === 'smart' ? 'inteligente' : 'substituindo link'}</span></div>)}
                   <div className="detail-item"><Layers size={13} /><span>{canal.total_forwarded} enviados</span></div>
                   {(canal.destinations?.length > 0) && (<div className="detail-item"><Target size={13} /><span>{1 + canal.destinations.length} destinos</span></div>)}
+                  {!canal.userbot_required && (<div className="detail-item"><Bot size={13} /><span>Apenas Bot Oficial</span></div>)}
                 </div>
 
                 <div className="canal-card-actions">
                   <button className="canal-edit-btn" onClick={() => openEditForm(canal)}><Edit3 size={14} /> Editar</button>
                   <button className="canal-adddest-btn" onClick={() => handleAddDestToChannel(canal.id)}><PlusCircle size={14} /> Destino</button>
+                  <button className="canal-adddest-btn" onClick={() => handleToggleTopics(canal.id)}><Hash size={14} /> Tópicos</button> {/* 🌟 BOTÃO TÓPICOS */}
                   <button className={`canal-toggle-btn ${canal.is_active ? 'active' : ''}`} onClick={() => handleToggle(canal.id)}>
                     {canal.is_active ? <PowerOff size={14} /> : <Power size={14} />}{canal.is_active ? 'Pausar' : 'Ativar'}
                   </button>
                   <button className="canal-delete-btn" onClick={() => handleDelete(canal.id, canal.origin_channel_name || canal.origin_channel_id)}><Trash2 size={14} /> Remover</button>
                 </div>
+
+                {/* 🌟 PAINEL INLINE DE MAPEAMENTO DE TÓPICOS */}
+                {expandedTopicId === canal.id && (
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px', animation: 'fadeUp 0.3s ease' }}>
+                    <span className="extra-dests-label" style={{ color: '#8b5cf6' }}><Hash size={12} /> Mapeamento de Tópicos</span>
+                    
+                    {channelTopics.length === 0 ? (
+                      <span className="field-hint" style={{ fontSize: '0.78rem' }}>Nenhum tópico mapeado. As mensagens irão para o chat geral do destino.</span>
+                    ) : (
+                      channelTopics.map(t => (
+                        <div key={t.id} className="extra-dest-card-item" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#ccc' }}>Origem: <b style={{ fontFamily: 'monospace' }}>{t.origin_topic_id}</b></span>
+                          <ArrowRight size={12} style={{ margin: '0 6px', color: '#666' }} />
+                          <span style={{ fontSize: '0.8rem', color: '#ccc' }}>Destino: <b style={{ fontFamily: 'monospace' }}>{t.dest_topic_id}</b></span>
+                          <button className="extra-dest-card-remove" style={{ marginLeft: 'auto' }} onClick={() => handleRemoveTopic(canal.id, t.id)} title="Remover Mapeamento"><Trash2 size={13} /></button>
+                        </div>
+                      ))
+                    )}
+
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                      <input type="number" placeholder="ID Origem (ex: 12)" className="form-input" style={{ padding: '8px 10px', fontSize: '0.8rem', flex: 1 }} value={topicOriginId} onChange={e => setTopicOriginId(e.target.value)} />
+                      <input type="number" placeholder="ID Destino (ex: 5)" className="form-input" style={{ padding: '8px 10px', fontSize: '0.8rem', flex: 1 }} value={topicDestId} onChange={e => setTopicDestId(e.target.value)} />
+                      <button className="add-dest-btn" style={{ height: 'auto', padding: '8px 14px' }} onClick={() => handleAddTopic(canal.id)} disabled={!topicOriginId || !topicDestId}><Plus size={14} /></button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

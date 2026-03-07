@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { telegramService } from '../services/api';
 import { 
   Smartphone, Key, ShieldCheck, AlertTriangle, 
-  ArrowRight, LogOut, Loader2, Info
+  ArrowRight, LogOut, Loader2, Info, Bot
 } from 'lucide-react';
 import './SessaoTelegram.css';
 
@@ -133,7 +133,16 @@ export function SessaoTelegram() {
       ) : (
         <div className="connection-wrapper">
           <div className="info-panel">
-            <h3><Info size={20}/> Como conectar?</h3>
+            {/* 🌟 BANNER INFORMATIVO PARA O MODO SÓ BOT */}
+            <div className="bot-only-banner">
+              <div className="bot-only-icon"><Bot size={24} /></div>
+              <div className="bot-only-text">
+                <strong>Quer usar apenas Bots Oficiais?</strong>
+                <p>Se você planeja utilizar a plataforma apenas conectando Bots e não precisa clonar canais restritos, você <b>não é obrigado</b> a conectar sua conta pessoal. Pode ir direto para a aba de Bots/Canais!</p>
+              </div>
+            </div>
+
+            <h3 style={{ marginTop: '24px' }}><Info size={20}/> Como conectar a conta pessoal?</h3>
             <ol>
               <li>Acesse <strong>my.telegram.org</strong> e faça login com seu número.</li>
               <li>Vá em <strong>API development tools</strong>.</li>

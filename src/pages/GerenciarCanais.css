@@ -951,3 +951,32 @@
   .canal-card-actions { flex-wrap: wrap; }
   .canal-edit-btn { flex: 1; justify-content: center; }
 }
+
+/* ==========================================
+   AJUSTES: TÓPICOS, EMOJIS E ANIMAÇÕES EXTRAS
+   ========================================== */
+
+/* Garantindo a animação base de aparição (usada no container e tópicos) */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Alinhamento do Botão de Emoji Premium dentro da Toolbar */
+.caption-toolbar .pep-trigger-wrapper {
+  display: flex;
+  align-items: center;
+  height: 30px; /* Mesma altura dos outros botões */
+}
+
+.caption-toolbar .pep-trigger-btn {
+  height: 100%;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+}
+
+.caption-toolbar .pep-trigger-btn:hover {
+  background: rgba(195, 51, 255, 0.1);
+  border-color: rgba(195, 51, 255, 0.2);
+}
