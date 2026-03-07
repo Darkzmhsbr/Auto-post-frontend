@@ -35,9 +35,16 @@ export const authService = {
   getMe: async () => (await api.get('/api/auth/me')).data,
 };
 
-// 👇 ADICIONE ESTE BLOCO NOVO AQUI 👇
 export const dashboardService = {
   getStats: async () => (await api.get('/api/autopost/stats')).data,
+};
+
+// 👇 NOVO BLOCO: SERVIÇOS DO TELEGRAM 👇
+export const telegramService = {
+  getStatus: async () => (await api.get('/api/telegram/status')).data,
+  requestCode: async (data) => (await api.post('/api/telegram/request-code', data)).data,
+  verifyCode: async (data) => (await api.post('/api/telegram/verify-code', data)).data,
+  logout: async () => (await api.post('/api/telegram/logout')).data,
 };
 
 export default api;
