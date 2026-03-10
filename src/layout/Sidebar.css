@@ -52,6 +52,11 @@
   .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
   .close-sidebar-btn { display: block; }
 }
+/* CLONEX BUTTON */
+.clonex-btn { color: #f59e0b !important; }
+.clonex-btn:hover { background-color: rgba(245, 158, 11, 0.1) !important; }
+.clonex-btn.active { background-color: rgba(245, 158, 11, 0.12) !important; color: #f59e0b !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
+
 /* ADMIN BUTTON */
 .admin-btn { color: #c333ff !important; }
 .admin-btn:hover { background-color: rgba(195, 51, 255, 0.1) !important; }

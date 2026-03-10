@@ -87,6 +87,11 @@ export const adminService = {
   demote: async (userId) => (await api.delete(`/api/admin/demote/${userId}`)).data,
 };
 
+// 👇 SERVIÇO DO CLONEX (Módulos de clonagem) 👇
+export const clonexService = {
+  getStatus: async () => (await api.get('/api/clonex/status')).data,
+};
+
 // 👇 SERVIÇO DE EMOJIS PREMIUM (usa API do Zenyx VIPs principal) 👇
 export const premiumEmojiService = {
   getCatalog: async () => {

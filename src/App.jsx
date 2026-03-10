@@ -8,6 +8,7 @@ import { GerenciarCanais } from './pages/GerenciarCanais'; // 👇 TELA DE CANAI
 import { FilaEnvios } from './pages/FilaEnvios'; // 👇 TELA DA FILA DE ENVIOS
 import { Historico } from './pages/Historico'; // 👇 TELA DE HISTÓRICO/LOGS
 import { SuperAdminAutoPost } from './pages/SuperAdminAutoPost'; // 👇 SUPER ADMIN
+import { Clonex } from './pages/Clonex'; // 👇 CLONEX — MÓDULOS DE CLONAGEM
 import { MainLayout } from './layout/MainLayout';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/sessao" element={<SessaoTelegram />} />
           <Route path="/bots" element={<GerenciarBots />} />
           <Route path="/canais" element={<GerenciarCanais />} />
+          <Route path="/clonex" element={<Clonex />} />
           <Route path="/fila" element={<FilaEnvios />} />
           <Route path="/logs" element={<Historico />} />
           <Route path="/admin" element={<SuperAdminAutoPost />} />

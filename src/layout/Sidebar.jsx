@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Smartphone, Layers, ListOrdered, 
-  History, X, LogOut, ExternalLink, Bot, Shield
+  History, X, LogOut, ExternalLink, Bot, Shield, Copy
 } from 'lucide-react';
 import { adminService } from '../services/api';
 import './Sidebar.css';
@@ -45,6 +45,10 @@ export function Sidebar({ isOpen, onClose }) {
 
         <NavLink to="/canais" className="nav-item" onClick={onClose}>
           <Layers size={20} /> <span>Canais / Pontes</span>
+        </NavLink>
+
+        <NavLink to="/clonex" className="nav-item clonex-btn" onClick={onClose}>
+          <Copy size={20} /> <span>Clonex</span>
         </NavLink>
 
         <NavLink to="/fila" className="nav-item" onClick={onClose}>

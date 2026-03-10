@@ -1,0 +1,334 @@
+/* ==========================================
+   CLONEX - ZENYX AUTOPOST
+   ========================================== */
+
+.clonex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  animation: fadeUp 0.4s ease;
+}
+
+.clonex-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #888;
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+.clonex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.clonex-header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clonex-header p {
+  color: #a3a3a3;
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* ==========================================
+   MÓDULOS GRID
+   ========================================== */
+.clonex-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+/* ==========================================
+   MODULE CARD
+   ========================================== */
+.clonex-module-card {
+  background: #12121a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.clonex-module-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+  transition: opacity 0.3s ease;
+}
+
+.clonex-module-card.unlocked::before {
+  background: linear-gradient(90deg, #c333ff, #8b5cf6);
+  opacity: 1;
+}
+
+.clonex-module-card.locked::before {
+  background: linear-gradient(90deg, #333, #555);
+  opacity: 0.5;
+}
+
+.clonex-module-card.unlocked:hover {
+  border-color: rgba(195, 51, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(195, 51, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.clonex-module-card.locked {
+  opacity: 0.85;
+}
+
+.clonex-module-card.locked:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================
+   MODULE HEADER (ICON + STATUS)
+   ========================================== */
+.clonex-module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clonex-module-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clonex-module-icon.unlocked {
+  background: rgba(195, 51, 255, 0.1);
+  color: #c333ff;
+}
+
+.clonex-module-icon.locked {
+  background: rgba(255, 255, 255, 0.04);
+  color: #555;
+}
+
+.clonex-module-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clonex-module-status.unlocked {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.15);
+}
+
+.clonex-module-status.locked {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.12);
+}
+
+/* ==========================================
+   MODULE CONTENT
+   ========================================== */
+.clonex-module-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.clonex-module-desc {
+  font-size: 0.9rem;
+  color: #999;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ==========================================
+   FEATURES LIST
+   ========================================== */
+.clonex-module-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.clonex-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #bbb;
+}
+
+.clonex-feature-item svg {
+  color: #c333ff;
+  flex-shrink: 0;
+}
+
+.clonex-feature-item.warning {
+  color: #f59e0b;
+  padding-top: 6px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.clonex-feature-item.warning svg {
+  color: #f59e0b;
+}
+
+/* ==========================================
+   ACTION BUTTON
+   ========================================== */
+.clonex-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.clonex-action-btn.unlocked {
+  background: #c333ff;
+  color: #fff;
+}
+
+.clonex-action-btn.unlocked:hover {
+  background: #a020d0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(195, 51, 255, 0.25);
+}
+
+/* ==========================================
+   BLOCKED INFO (CLONEX VIPs)
+   ========================================== */
+.clonex-blocked-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-top: auto;
+}
+
+.clonex-blocked-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clonex-blocked-text {
+  font-size: 0.88rem;
+  color: #999;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.clonex-blocked-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(59, 130, 246, 0.04);
+  border: 1px solid rgba(59, 130, 246, 0.08);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+.clonex-blocked-detail svg {
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.clonex-blocked-detail strong {
+  color: #bbb;
+}
+
+.clonex-blocked-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #666;
+}
+
+.clonex-blocked-note svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   ANIMAÇÃO
+   ========================================== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   RESPONSIVO
+   ========================================== */
+@media (max-width: 768px) {
+  .clonex-modules-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clonex-module-card {
+    padding: 22px;
+  }
+
+  .clonex-header h1 {
+    font-size: 1.4rem;
+  }
+}
