@@ -57,6 +57,11 @@
 .clonex-btn:hover { background-color: rgba(245, 158, 11, 0.1) !important; }
 .clonex-btn.active { background-color: rgba(245, 158, 11, 0.12) !important; color: #f59e0b !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
 
+/* FERRAMENTAS BUTTON */
+.ferramentas-btn { color: #10b981 !important; }
+.ferramentas-btn:hover { background-color: rgba(16, 185, 129, 0.1) !important; }
+.ferramentas-btn.active { background-color: rgba(16, 185, 129, 0.12) !important; color: #10b981 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
+
 /* ADMIN BUTTON */
 .admin-btn { color: #c333ff !important; }
 .admin-btn:hover { background-color: rgba(195, 51, 255, 0.1) !important; }

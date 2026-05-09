@@ -116,4 +116,27 @@ export const premiumEmojiService = {
   },
 };
 
+// 👇 SERVIÇO DAS FERRAMENTAS DE CRIATIVOS 👇
+export const ferramentasService = {
+  // Verificação de acesso (consulta a Zenyx via backend)
+  verificarAcesso: async () => (await api.get('/api/ferramentas/jobs?limit=1')).data,
+
+  // Envia arquivo + tipo + parâmetros para processamento
+  processar: async (formData) => {
+    const response = await api.post('/api/ferramentas/processar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  // Polling de status do job
+  statusJob: async (jobId) => (await api.get(`/api/ferramentas/status/${jobId}`)).data,
+
+  // Histórico de jobs do usuário
+  listarJobs: async (limit = 20) => (await api.get(`/api/ferramentas/jobs?limit=${limit}`)).data,
+
+  // Remove job e arquivos do disco
+  deletarJob: async (jobId) => (await api.delete(`/api/ferramentas/jobs/${jobId}`)).data,
+};
+
 export default api;
