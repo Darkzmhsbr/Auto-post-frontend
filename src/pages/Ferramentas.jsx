@@ -95,14 +95,25 @@ const FERRAMENTAS = [
   {
     id: 'marca_dagua',
     nome: 'Marca D\'água',
-    descricao: 'Adiciona uma watermark de texto personalizada em imagens e vídeos, com controle de posição e opacidade.',
+    descricao: 'Adiciona watermark de texto ou imagem PNG em fotos e vídeos, com controle de posição, tamanho e opacidade.',
     categoria: 'edicao',
     catLabel: 'Edição',
     icone: Droplets,
     aceitaMidia: 'imagem e vídeo',
     extensoes: '.jpg .png .webp .mp4 .mov',
     params: [
-      { key: 'texto',    label: 'Texto da marca d\'água', tipo: 'text', placeholder: '© Seu Nome', default: '© Criativo' },
+      {
+        key: 'modo',
+        label: 'Tipo de marca d\'água',
+        tipo: 'select',
+        opcoes: [
+          { value: 'texto',  label: '✏️ Texto personalizado' },
+          { value: 'imagem', label: '🖼️ Imagem PNG (logo)' },
+        ],
+        default: 'texto',
+      },
+      { key: 'texto', label: 'Texto (se modo=texto)', tipo: 'text', placeholder: '© Seu Nome', default: '© Criativo' },
+      { key: 'tamanho_fonte', label: 'Tamanho da fonte (px)', tipo: 'number', placeholder: '48', default: '48' },
       {
         key: 'posicao',
         label: 'Posição',
@@ -117,6 +128,7 @@ const FERRAMENTAS = [
         default: 'bottom_right',
       },
       { key: 'opacidade', label: 'Opacidade (0–100)', tipo: 'number', placeholder: '70', default: '70' },
+      { key: 'escala_wm', label: 'Tamanho da logo (% da largura)', tipo: 'number', placeholder: '20', default: '20' },
     ],
   },
   {
@@ -337,6 +349,8 @@ function FerramentaModal({ ferramenta, onClose }) {
 
   // Estado do modal
   const [arquivo, setArquivo]       = useState(null);
+  const [wmFile, setWmFile]         = useState(null);   // arquivo PNG da marca d'água
+  const [wmPreview, setWmPreview]   = useState(null);   // preview base64 da logo
   const [params, setParams]         = useState(
     Object.fromEntries(ferramenta.params.map(p => [p.key, p.default ?? '']))
   );
@@ -375,6 +389,8 @@ function FerramentaModal({ ferramenta, onClose }) {
   const handleArquivo = (file) => {
     if (!file) return;
     setArquivo(file);
+    setWmFile(null);
+    setWmPreview(null);
     setJobId(null);
     setJobStatus(null);
     setJobDownload(null);
@@ -396,7 +412,19 @@ function FerramentaModal({ ferramenta, onClose }) {
       // Monta FormData
       const formData = new FormData();
       formData.append('tipo', ferramenta.id);
-      formData.append('parametros', JSON.stringify(params));
+
+      // Para marca_dagua com modo=imagem, converte o PNG para base64 e inclui nos params
+      let paramsToSend = { ...params };
+      if (ferramenta.id === 'marca_dagua' && params.modo === 'imagem' && wmFile) {
+        const reader = new FileReader();
+        const wmB64 = await new Promise((res) => {
+          reader.onload = (e) => res(e.target.result.split(',')[1]);
+          reader.readAsDataURL(wmFile);
+        });
+        paramsToSend.wm_base64 = wmB64;
+      }
+
+      formData.append('parametros', JSON.stringify(paramsToSend));
       formData.append('arquivo', arquivo);
 
       const data = await ferramentasService.processar(formData);
@@ -490,16 +518,33 @@ function FerramentaModal({ ferramenta, onClose }) {
               {/* PARÂMETROS */}
               {ferramenta.params.length > 0 && arquivo && (
                 <div className="ferr-params">
-                  {ferramenta.params.length === 2 ? (
-                    <div className="ferr-params-row">
-                      {ferramenta.params.map(p => (
-                        <ParamField key={p.key} param={p} value={params[p.key]} onChange={v => setParams(prev => ({ ...prev, [p.key]: v }))} />
-                      ))}
+                  {ferramenta.params.map(p => (
+                    <ParamField key={p.key} param={p} value={params[p.key]} onChange={v => setParams(prev => ({ ...prev, [p.key]: v }))} />
+                  ))}
+                  {/* Upload PNG da logo quando marca_dagua modo=imagem */}
+                  {ferramenta.id === 'marca_dagua' && params.modo === 'imagem' && (
+                    <div className="ferr-param-group">
+                      <label className="ferr-param-label">Arquivo PNG da logo</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <input
+                          type="file"
+                          accept=".png"
+                          style={{ flex: 1, color: '#ccc', fontSize: '0.85rem' }}
+                          onChange={e => {
+                            const f = e.target.files[0];
+                            if (!f) return;
+                            setWmFile(f);
+                            const r = new FileReader();
+                            r.onload = ev => setWmPreview(ev.target.result);
+                            r.readAsDataURL(f);
+                          }}
+                        />
+                        {wmPreview && (
+                          <img src={wmPreview} alt="preview logo" style={{ height: 40, borderRadius: 6, border: '1px solid #333' }} />
+                        )}
+                      </div>
+                      {!wmFile && <p style={{ fontSize: '0.72rem', color: '#555', margin: '4px 0 0' }}>Selecione um arquivo PNG transparente com sua logo</p>}
                     </div>
-                  ) : (
-                    ferramenta.params.map(p => (
-                      <ParamField key={p.key} param={p} value={params[p.key]} onChange={v => setParams(prev => ({ ...prev, [p.key]: v }))} />
-                    ))
                   )}
                 </div>
               )}
