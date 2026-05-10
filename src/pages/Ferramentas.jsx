@@ -271,7 +271,7 @@ export function Ferramentas() {
                 {job.status === 'done' && job.download_url && (
                   <a
                     className="ferr-hist-download"
-                    href={`${API_BASE}${job.download_url}`}
+                    href={`${API_BASE}${job.download_url}?token=${localStorage.getItem('zenyx_token') || ''}`}
                     download
                     target="_blank"
                     rel="noreferrer"
@@ -427,7 +427,9 @@ function FerramentaModal({ ferramenta, onClose }) {
     setErroMsg('');
   };
 
-  const downloadUrl = jobDownload ? `${API_BASE}${jobDownload}` : null;
+  const downloadUrl = jobDownload
+    ? `${API_BASE}${jobDownload}?token=${localStorage.getItem('zenyx_token') || ''}`
+    : null;
   const processando = jobStatus === 'pending' || jobStatus === 'processing';
   const concluido   = jobStatus === 'done';
   const comErro     = jobStatus === 'error';
