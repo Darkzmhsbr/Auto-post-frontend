@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   Wrench, Shield, RefreshCw, Layers, Scissors, Droplets,
-  Eye, Zap, Lock, Upload, X, Download, CheckCircle,
+  Eye, EyeOff, Zap, Lock, Upload, X, Download, CheckCircle,
   AlertTriangle, Loader2, Clock, History, FileVideo,
   FileImage, ArrowRight, Info
 } from 'lucide-react';
@@ -98,6 +98,7 @@ const FERRAMENTAS = [
     descricao: 'Adiciona watermark de texto ou imagem PNG em fotos e vídeos, com controle de posição, tamanho e opacidade.',
     categoria: 'edicao',
     catLabel: 'Edição',
+    temPreview: true,
     icone: Droplets,
     aceitaMidia: 'imagem e vídeo',
     extensoes: '.jpg .png .webp .mp4 .mov',
@@ -137,7 +138,7 @@ const FERRAMENTAS = [
     descricao: 'Cria uma versão censurada do criativo com blur central para usar como thumbnail ou preview antes da compra.',
     categoria: 'protecao',
     catLabel: 'Proteção',
-    icone: Eye,
+    icone: EyeOff,
     aceitaMidia: 'imagem e vídeo',
     extensoes: '.jpg .png .webp .mp4 .mov',
     params: [],
@@ -153,6 +154,108 @@ const API_BASE = import.meta.env.VITE_API_URL || 'https://api-autopost.zenyxvips
 // ==========================================
 // COMPONENTE PRINCIPAL
 // ==========================================
+// ============================================================
+// HOOK: PREVIEW CANVAS — marca d'água em tempo real
+// ============================================================
+function calcPos(pos, cw, ch, elW, elH, mg) {
+  switch (pos) {
+    case 'top_left':    return { x: mg,            y: mg };
+    case 'top_right':   return { x: cw - elW - mg, y: mg };
+    case 'bottom_left': return { x: mg,            y: ch - elH - mg };
+    case 'center':      return { x: (cw - elW) / 2, y: (ch - elH) / 2 };
+    default:            return { x: cw - elW - mg,  y: ch - elH - mg }; // bottom_right
+  }
+}
+
+function useMarcaDaguaPreview({ arquivo, params, wmPreview }) {
+  const canvasRef = useRef(null);
+  const [mediaSize, setMediaSize] = useState(null);
+  const frameRef  = useRef(null);
+
+  const render = useCallback((source, natW, natH) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const MAX_W = 360, MAX_H = 280;
+    const sc = Math.min(MAX_W / natW, MAX_H / natH, 1);
+    const cw = Math.round(natW * sc);
+    const ch = Math.round(natH * sc);
+    canvas.width  = cw;
+    canvas.height = ch;
+    setMediaSize({ w: natW, h: natH });
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(source, 0, 0, cw, ch);
+
+    const modo    = params.modo || 'texto';
+    const posicao = params.posicao || 'bottom_right';
+    const opac    = Math.min(1, Math.max(0, parseFloat(params.opacidade || 70) / 100));
+    const mg      = Math.max(6, Math.round(cw * 0.025));
+
+    if (modo === 'imagem' && wmPreview) {
+      const wm = new Image();
+      wm.onload = () => {
+        const escala = parseFloat(params.escala_wm || 20) / 100;
+        const wmW = Math.max(10, Math.round(cw * escala));
+        const wmH = Math.round(wmW * wm.naturalHeight / wm.naturalWidth);
+        const p = calcPos(posicao, cw, ch, wmW, wmH, mg);
+        ctx.globalAlpha = opac;
+        ctx.drawImage(wm, p.x, p.y, wmW, wmH);
+        ctx.globalAlpha = 1;
+      };
+      wm.src = wmPreview;
+    } else {
+      const texto  = params.texto || '© Criativo';
+      const pct    = parseFloat(params.tamanho_fonte || 8);
+      const fontPx = Math.max(8, Math.round(ch * pct / 100));
+      ctx.font         = `bold ${fontPx}px Arial, sans-serif`;
+      ctx.textBaseline = 'top';
+      const met = ctx.measureText(texto);
+      const tw  = met.width;
+      const th  = fontPx * 1.2;
+      const p   = calcPos(posicao, cw, ch, tw, th, mg);
+      // Sombra dupla para contraste
+      ctx.globalAlpha = Math.min(1, opac + 0.35);
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      ctx.fillText(texto, p.x + 2, p.y + 2);
+      ctx.fillText(texto, p.x - 1, p.y - 1);
+      // Texto branco
+      ctx.globalAlpha = opac;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(texto, p.x, p.y);
+      ctx.globalAlpha = 1;
+    }
+  }, [params, wmPreview]);
+
+  useEffect(() => {
+    if (!arquivo) return;
+    cancelAnimationFrame(frameRef.current);
+    const isVideo = arquivo.type.startsWith('video/');
+    const url = URL.createObjectURL(arquivo);
+    if (isVideo) {
+      const vid = document.createElement('video');
+      vid.preload = 'metadata';
+      vid.muted   = true;
+      vid.onloadeddata = () => { vid.currentTime = Math.min(0.5, vid.duration * 0.05); };
+      vid.onseeked = () => {
+        frameRef.current = requestAnimationFrame(() => render(vid, vid.videoWidth, vid.videoHeight));
+        URL.revokeObjectURL(url);
+      };
+      vid.src = url;
+    } else {
+      const img = new Image();
+      img.onload = () => {
+        frameRef.current = requestAnimationFrame(() => render(img, img.naturalWidth, img.naturalHeight));
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+  }, [arquivo, render]);
+
+  return { canvasRef, mediaSize };
+}
+
 export function Ferramentas() {
   const [acesso, setAcesso]       = useState(null);  // null=carregando, true=ok, false=bloqueado
   const [ferrAtiva, setFerrAtiva] = useState(null);  // ferramenta com modal aberto
@@ -345,7 +448,8 @@ function FerramentaCard({ ferramenta, bloqueado, onClick }) {
 // MODAL DE PROCESSAMENTO
 // ==========================================
 function FerramentaModal({ ferramenta, onClose }) {
-  const Icone = ferramenta.icone;
+  const Icone      = ferramenta.icone;
+  const temPreview = !!ferramenta.temPreview;
 
   // Estado do modal
   const [arquivo, setArquivo]       = useState(null);
@@ -362,6 +466,14 @@ function FerramentaModal({ ferramenta, onClose }) {
   const [dragover, setDragover]     = useState(false);
 
   const pollingRef = useRef(null);
+
+  // Hook de preview em tempo real (só ativo para marca_dagua)
+  const { canvasRef, mediaSize } = useMarcaDaguaPreview(
+    temPreview ? { arquivo, params, wmPreview } : { arquivo: null, params, wmPreview }
+  );
+
+  // Layout split: controles à esquerda + preview à direita
+  const splitLayout = temPreview && arquivo && !jobId;
 
   // Polling de status do job
   const iniciarPolling = useCallback((id) => {
@@ -464,8 +576,7 @@ function FerramentaModal({ ferramenta, onClose }) {
 
   return (
     <div className="ferr-modal-overlay" onClick={onClose}>
-      <div className="ferr-modal" onClick={e => e.stopPropagation()}>
-
+      <div className={`ferr-modal ${splitLayout ? 'ferr-modal--wide' : ''}`} onClick={e => e.stopPropagation()}>
         {/* HEADER DO MODAL */}
         <div className="ferr-modal-header">
           <div className="ferr-modal-header-left">
@@ -482,7 +593,10 @@ function FerramentaModal({ ferramenta, onClose }) {
         </div>
 
         {/* BODY DO MODAL */}
-        <div className="ferr-modal-body">
+        <div className={`ferr-modal-body ${splitLayout ? 'ferr-modal-body--split' : ''}`}>
+
+          {/* COLUNA DE CONTROLES */}
+          <div className="ferr-col-controls">
 
           {/* UPLOAD */}
           {!jobId && (
@@ -545,6 +659,19 @@ function FerramentaModal({ ferramenta, onClose }) {
                       </div>
                       {!wmFile && <p style={{ fontSize: '0.72rem', color: '#555', margin: '4px 0 0' }}>Selecione um arquivo PNG transparente com sua logo</p>}
                     </div>
+                  )}
+                </div>
+              )}
+
+              {/* BADGE DE DIMENSÕES + CÁLCULO DE FONTE */}
+              {temPreview && mediaSize && (
+                <div className="ferr-dim-badge">
+                  <Info size={12} />
+                  {mediaSize.w} × {mediaSize.h} px
+                  {params.tamanho_fonte && params.modo !== 'imagem' && (
+                    <span style={{ color: '#c333ff', marginLeft: 6 }}>
+                      → ~{Math.round(mediaSize.h * parseFloat(params.tamanho_fonte || 8) / 100)}px de fonte
+                    </span>
                   )}
                 </div>
               )}
@@ -627,6 +754,24 @@ function FerramentaModal({ ferramenta, onClose }) {
                 </button>
               </div>
             </>
+          )}
+
+          </div>{/* fim ferr-col-controls */}
+
+          {/* COLUNA DE PREVIEW — só para marca_dagua com arquivo carregado */}
+          {splitLayout && (
+            <div className="ferr-col-preview">
+              <div className="ferr-preview-header">
+                <span className="ferr-preview-label"><Eye size={13} /> Preview em tempo real</span>
+                <span className="ferr-preview-hint">Ajuste os parâmetros e veja o resultado antes de processar.</span>
+              </div>
+              <div className="ferr-canvas-wrap">
+                <canvas ref={canvasRef} className="ferr-preview-canvas" />
+              </div>
+              <p className="ferr-preview-note">
+                ⚠️ Aproximação visual — a fonte real do servidor pode variar ligeiramente.
+              </p>
+            </div>
           )}
 
         </div>
