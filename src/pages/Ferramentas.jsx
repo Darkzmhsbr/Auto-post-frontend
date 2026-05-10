@@ -113,7 +113,7 @@ const FERRAMENTAS = [
         default: 'texto',
       },
       { key: 'texto', label: 'Texto (se modo=texto)', tipo: 'text', placeholder: '© Seu Nome', default: '© Criativo' },
-      { key: 'tamanho_fonte', label: 'Tamanho da fonte (px)', tipo: 'number', placeholder: '48', default: '48' },
+      { key: 'tamanho_fonte', label: 'Tamanho do texto (% da altura, ex: 8)', tipo: 'number', placeholder: '8', default: '8' },
       {
         key: 'posicao',
         label: 'Posição',
