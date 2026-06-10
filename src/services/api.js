@@ -139,4 +139,49 @@ export const ferramentasService = {
   deletarJob: async (jobId) => (await api.delete(`/api/ferramentas/jobs/${jobId}`)).data,
 };
 
+// 👇 SERVIÇO DO INSTAGRAM FARM 👇
+export const instagramService = {
+  // ── Contas ──────────────────────────────────────────────────────────────────
+  // Vincula nova conta (multipart: ig_username, ig_password, proxy_url opcional)
+  vincularConta: async (formData) => {
+    const response = await api.post('/api/instagram/accounts', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+  // Vincula via JSON (sem arquivo)
+  vincularContaJson: async (data) => (await api.post('/api/instagram/accounts', data)).data,
+  // Lista contas vinculadas
+  listarContas: async () => (await api.get('/api/instagram/accounts')).data,
+  // Status de login de uma conta
+  statusConta: async (id) => (await api.get(`/api/instagram/accounts/${id}/status`)).data,
+  // Confirma código de challenge (email/SMS do Instagram)
+  verificarChallenge: async (id, code) => (await api.post(`/api/instagram/accounts/${id}/verify`, { code })).data,
+  // Desvincula conta
+  desvincularConta: async (id) => (await api.delete(`/api/instagram/accounts/${id}`)).data,
+
+  // ── Posts ───────────────────────────────────────────────────────────────────
+  // Agenda post (multipart: account_id, post_type, caption, scheduled_for, arquivo)
+  agendarPost: async (formData) => {
+    const response = await api.post('/api/instagram/posts', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+  // Lista fila de posts (filtros opcionais: status, account_id, limit)
+  listarPosts: async (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return (await api.get(`/api/instagram/posts${qs ? '?' + qs : ''}`)).data;
+  },
+  // Cancela/remove post da fila
+  cancelarPost: async (id) => (await api.delete(`/api/instagram/posts/${id}`)).data,
+
+  // ── Logs ────────────────────────────────────────────────────────────────────
+  listarLogs: async (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return (await api.get(`/api/instagram/logs${qs ? '?' + qs : ''}`)).data;
+  },
+  limparLogs: async () => (await api.delete('/api/instagram/logs')).data,
+};
+
 export default api;

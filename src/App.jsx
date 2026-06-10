@@ -10,6 +10,7 @@ import { Historico } from './pages/Historico';
 import { SuperAdminAutoPost } from './pages/SuperAdminAutoPost';
 import { Clonex } from './pages/Clonex';
 import { Ferramentas } from './pages/Ferramentas'; // 👈 NOVO
+import { Instagram } from './pages/Instagram';     // 👈 INSTAGRAM FARM
 import { MainLayout } from './layout/MainLayout';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/canais" element={<GerenciarCanais />} />
           <Route path="/clonex" element={<Clonex />} />
           <Route path="/ferramentas" element={<Ferramentas />} /> {/* 👈 NOVO */}
+          <Route path="/instagram" element={<Instagram />} />   {/* 👈 INSTAGRAM FARM */}
           <Route path="/fila" element={<FilaEnvios />} />
           <Route path="/logs" element={<Historico />} />
           <Route path="/admin" element={<SuperAdminAutoPost />} />

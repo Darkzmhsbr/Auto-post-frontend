@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Smartphone, Layers, ListOrdered, 
-  History, X, LogOut, ExternalLink, Bot, Shield, Copy, Wrench
+  History, X, LogOut, ExternalLink, Bot, Shield, Copy, Wrench, Instagram
 } from 'lucide-react';
 import { adminService } from '../services/api';
 import './Sidebar.css';
@@ -53,6 +53,10 @@ export function Sidebar({ isOpen, onClose }) {
 
         <NavLink to="/ferramentas" className="nav-item ferramentas-btn" onClick={onClose}>
           <Wrench size={20} /> <span>Ferramentas</span>
+        </NavLink>
+
+        <NavLink to="/instagram" className="nav-item instagram-btn" onClick={onClose}>
+          <Instagram size={20} /> <span>Instagram Farm</span>
         </NavLink>
 
         <NavLink to="/fila" className="nav-item" onClick={onClose}>
