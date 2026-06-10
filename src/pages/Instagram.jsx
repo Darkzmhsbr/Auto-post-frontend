@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
-  Instagram, Plus, Trash2, RefreshCw, Send, Clock, CheckCircle2,
+  Instagram as IgIcon, Plus, Trash2, RefreshCw, Send, Clock, CheckCircle2,
   AlertCircle, XCircle, Eye, EyeOff, ChevronDown, ChevronUp,
   LogIn, Shield, Wifi, WifiOff, ListOrdered, History, X
 } from 'lucide-react';
@@ -162,7 +162,7 @@ function ModalAdicionarConta({ onClose, onSuccess }) {
       <div className="ig-modal" onClick={e => e.stopPropagation()}>
         <div className="ig-modal-header">
           <div className="ig-modal-title">
-            <Instagram size={20} /> Vincular Conta Instagram
+            <IgIcon size={20} /> Vincular Conta Instagram
           </div>
           <button className="ig-icon-btn" onClick={onClose}><X size={18} /></button>
         </div>
@@ -498,7 +498,7 @@ export function Instagram() {
       {/* HEADER */}
       <div className="ig-header">
         <div className="ig-header-left">
-          <div className="ig-header-icon"><Instagram size={24} /></div>
+          <div className="ig-header-icon"><IgIcon size={24} /></div>
           <div>
             <h1>Instagram Farm</h1>
             <p>Gerencie múltiplas contas e agende posts com isolamento de proxy.</p>
@@ -540,7 +540,7 @@ export function Instagram() {
       {/* ABAS */}
       <div className="ig-tabs">
         <button className={`ig-tab ${aba === 'contas' ? 'active' : ''}`} onClick={() => setAba('contas')}>
-          <Instagram size={15} /> Contas ({totalContas})
+          <IgIcon size={15} /> Contas ({totalContas})
         </button>
         <button className={`ig-tab ${aba === 'posts' ? 'active' : ''}`} onClick={() => setAba('posts')}>
           <ListOrdered size={15} /> Fila de Posts ({posts.length})
@@ -560,7 +560,7 @@ export function Instagram() {
             <div className="ig-section">
               {contas.length === 0 ? (
                 <div className="ig-empty">
-                  <Instagram size={40} />
+                  <IgIcon size={40} />
                   <p>Nenhuma conta vinculada ainda.</p>
                   <button className="ig-btn primary" onClick={() => setModalConta(true)}>
                     <Plus size={15} /> Vincular primeira conta
