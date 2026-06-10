@@ -143,8 +143,13 @@ function ModalAdicionarConta({ onClose, onSuccess }) {
     setLoading(true);
     setErro('');
     try {
+      // Remove @ inicial só se for username (ex: @rafah.winx → rafah.winx)
+      // Se for email (darkzmhs@gmail.com), envia intacto
+      const rawUsr = form.ig_username.trim();
+      const isEmail = rawUsr.includes('@') && rawUsr.indexOf('@') > 0;
+      const cleanUsr = isEmail ? rawUsr : rawUsr.replace(/^@/, '');
       const payload = {
-        ig_username: form.ig_username.trim().replace('@', ''),
+        ig_username: cleanUsr,
         ig_password: form.ig_password,
         proxy_url: form.proxy_url.trim() || null,
       };
